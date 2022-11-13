@@ -1,9 +1,9 @@
 #pragma once
 
 #define SNIPPET_EXPANSION "4coder_byp_snippets.inc"
+#include "4coder_tree_sitter.cpp"
 
-#include "4coder_default_include.cpp"
-
+CUSTOM_ID(colors, defcolor_base2);
 CUSTOM_ID(colors, defcolor_function);
 CUSTOM_ID(colors, defcolor_type);
 CUSTOM_ID(colors, defcolor_primitive);
@@ -11,6 +11,14 @@ CUSTOM_ID(colors, defcolor_macro);
 CUSTOM_ID(colors, defcolor_control);
 CUSTOM_ID(colors, defcolor_struct);
 CUSTOM_ID(colors, defcolor_non_text);
+
+// #define TERMINAL_4ED_IMPL
+// #include "4coder_terminal.h"
+
+#include "whitebox_4coder.cpp"
+
+#define LSP_4ED_IMPL
+#include "4coder_lsp.h"
 
 #include "4coder_vimrc.h"
 #include "4coder_vim\\4coder_vim_include.h"
@@ -29,7 +37,6 @@ CUSTOM_ID(colors, defcolor_non_text);
 
 #include "4coder_byp_bindings.cpp"
 #include "4coder_byp_hooks.cpp"
-
 
 #if !defined(META_PASS)
 #include "generated/managed_id_metadata.cpp"
@@ -60,8 +67,8 @@ custom_layer_init(Application_Links *app){
 
 	set_custom_hook(app, HookID_Tick,                     byp_tick);
 	set_custom_hook(app, HookID_NewFile,                  byp_new_file);
-	set_custom_hook(app, HookID_BeginBuffer,              vim_begin_buffer);
-	set_custom_hook(app, HookID_BufferEditRange,          vim_buffer_edit_range);
+	set_custom_hook(app, HookID_BeginBuffer,              byp_begin_buffer);
+	set_custom_hook(app, HookID_BufferEditRange,          byp_buffer_edit_range);
 	set_custom_hook(app, HookID_ViewChangeBuffer,         vim_view_change_buffer);
 	set_custom_hook(app, HookID_ViewEventHandler,         vim_view_input_handler);
 
@@ -73,6 +80,7 @@ custom_layer_init(Application_Links *app){
 	byp_essential_mapping(&framework_mapping, global_map_id, file_map_id, code_map_id);
 	byp_default_bindings(&framework_mapping, global_map_id, file_map_id, code_map_id);
 
+    jpts_register_languages(app);
 	vim_default_bindings(app, KeyCode_BackwardSlash);
 	byp_vim_bindings(app);
 }

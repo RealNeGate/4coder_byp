@@ -12,7 +12,7 @@ patterns = {
 "*.4coder",
 "*.txt",
 };
-blacklist_patterns = { ".*", };
+blacklist_patterns = { "lang", "generated", "languages", "lexer_generator", "tree-sitter", };
 load_paths_custom = {
  {"..\custom"}, {"."},
 };
@@ -26,7 +26,7 @@ command_list = {
 
  { .name = "run test build",
    .out = "*compilation*", .footer_panel = true, .save_dirty_files = true, .cursor_at_end = true,
-   .cmd = { {"..\\test_build\\4ed.exe 4coder_vim\\4coder_vim_bindings.cpp", .os = "win" },
+   .cmd = { {"..\\testbed\\4ed.exe 4coder_vim\\4coder_vim_bindings.cpp", .os = "win" },
            }, },
 
  { .name = "build byp",
@@ -40,6 +40,6 @@ command_list = {
             }, }
 };
 
+fkey_command[1] = "build byp";
 fkey_command[2] = "run test build";
-fkey_command[5] = "build byp";
 fkey_command[9] = "debugger";

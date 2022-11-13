@@ -14,7 +14,12 @@ byp_essential_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id)
 
 	SelectMap(file_id);
 	ParentMap(global_id);
-	BindTextInput(byp_write_text_input);
+    b32 auto_indent = def_get_config_b32(vars_save_string_lit("automatically_indent_text_on_save"));
+    if (auto_indent) {
+	    BindTextInput(write_text_and_auto_indent);
+    } else {
+        BindTextInput(write_text_input);
+    }
 	BindMouse(click_set_cursor_and_mark, MouseCode_Left);
 	BindMouseRelease(click_set_cursor, MouseCode_Left);
 	BindCore(click_set_cursor_and_mark, CoreCode_ClickActivateView);
@@ -27,14 +32,20 @@ byp_essential_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id)
 function void
 byp_vim_bindings(Application_Links *app){
 
-#define N bit_1
-#define I bit_2
-#define V bit_3
-#define MAP 0
+    #define N bit_1
+    #define I bit_2
+    #define V bit_3
+    #define MAP 0
 	u32 Ctl = KeyMod_Ctl;
 	u32 Sft = KeyMod_Sft;
 	u32 Alt = KeyMod_Alt;
 
+	VimBind(N|V|MAP, vim_whole_page_up,               KeyCode_PageUp);
+	VimBind(N|V|MAP, vim_whole_page_down,             KeyCode_PageDown);
+
+	VimBind(N|MAP, negate_exec_cli,                       (Alt|KeyCode_C));
+	VimBind(N|I|MAP, search,                              (Ctl|KeyCode_F));
+	VimBind(N|I|MAP, list_all_locations,              (Ctl|Sft|KeyCode_F));
 	VimBind(N|MAP, redo,                                  (Ctl|KeyCode_Y));
 	VimBind(N|MAP, redo,                              (Ctl|Sft|KeyCode_Z));
 	VimBind(N|MAP, save,                                  (Ctl|KeyCode_S));
@@ -61,17 +72,10 @@ byp_vim_bindings(Application_Links *app){
 	VimBind(N|V|MAP, vim_leader_D,           SUB_Leader,  (Sft|KeyCode_D));
 	VimBind(N|V|MAP, vim_leader_C,           SUB_Leader,  (Sft|KeyCode_C));
 
-	VimBind(I|MAP, byp_auto_complete_bracket,                  KeyCode_Return);
-	VimBind(I|MAP, byp_auto_complete_bracket,             (Sft|KeyCode_Return));
-	VimBind(N|MAP, goto_jump_at_cursor,                        KeyCode_Return);
-	VimBind(N|MAP, goto_jump_at_cursor_same_panel,        (Sft|KeyCode_Return));
-	VimBind(V|MAP, byp_list_all_locations_selection,  (Ctl|Sft|KeyCode_F));
-	VimBind(N|MAP, list_all_locations_of_identifier,  (Ctl|Sft|KeyCode_F));
-
-#undef I
-#undef N
-#undef V
-#undef MAP
+    #undef I
+    #undef N
+    #undef V
+    #undef MAP
 }
 
 
@@ -85,8 +89,6 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(project_go_to_root_directory,  KeyCode_H, KeyCode_Control);
 	Bind(save_all_dirty_buffers,        KeyCode_S, KeyCode_Control, KeyCode_Shift);
 	Bind(byp_build_project,             KeyCode_M, KeyCode_Alt);
-	Bind(execute_any_cli,               KeyCode_Z, KeyCode_Alt);
-	Bind(execute_previous_cli,          KeyCode_Z, KeyCode_Alt, KeyCode_Shift);
 	Bind(quick_swap_buffer,             KeyCode_BackwardSlash, KeyCode_Alt);
 	Bind(exit_4coder,                   KeyCode_F4, KeyCode_Alt);
 
@@ -134,11 +136,9 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(delete_alpha_numeric_boundary,                 KeyCode_Delete, KeyCode_Control);
 	Bind(snipe_backward_whitespace_or_token_boundary,   KeyCode_Backspace, KeyCode_Alt);
 	Bind(snipe_forward_whitespace_or_token_boundary,    KeyCode_Delete, KeyCode_Alt);
-	Bind(set_mark,                                      KeyCode_Space, KeyCode_Control);
+	//Bind(set_mark,                                      KeyCode_Space, KeyCode_Control);
 	Bind(delete_range,                                  KeyCode_D, KeyCode_Control);
 	Bind(delete_line,                                   KeyCode_D, KeyCode_Control, KeyCode_Shift);
-	Bind(search,                                        KeyCode_F, KeyCode_Control);
-	Bind(list_all_locations,                            KeyCode_F, KeyCode_Control, KeyCode_Shift);
 	Bind(list_all_substring_locations_case_insensitive, KeyCode_F, KeyCode_Alt);
 	Bind(list_all_locations_of_selection,               KeyCode_G, KeyCode_Control, KeyCode_Shift);
 	Bind(snippet_lister,                                KeyCode_J, KeyCode_Control);
@@ -156,15 +156,15 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(cut,                                           KeyCode_X, KeyCode_Control);
 	Bind(redo,                                          KeyCode_Y, KeyCode_Control);
 	Bind(undo,                                          KeyCode_Z, KeyCode_Control);
-	Bind(goto_jump_at_cursor,                           KeyCode_Return);
-	Bind(goto_jump_at_cursor_same_panel,                KeyCode_Return, KeyCode_Shift);
+	//Bind(goto_jump_at_cursor,                           KeyCode_Return);
+	//Bind(goto_jump_at_cursor_same_panel,                KeyCode_Return, KeyCode_Shift);
 	Bind(view_jump_list_with_lister,                    KeyCode_Period, KeyCode_Control, KeyCode_Shift);
 
 	SelectMap(code_id);
 	ParentMap(file_id);
 
 	Bind(comment_line_toggle,                           KeyCode_Semicolon, KeyCode_Control);
-	Bind(word_complete,                                 KeyCode_Tab);
-	Bind(if0_off,                                       KeyCode_I, KeyCode_Alt);
+	Bind(byp_write_indent,                              KeyCode_Tab);
+	Bind(word_complete,                                 KeyCode_Space, KeyCode_Control);
 	Bind(open_matching_file_cpp,                        KeyCode_2, KeyCode_Alt);
 }

@@ -1,0 +1,6 @@
+generated/
+
+*.pdb
+*.exe
+*.ilk
+*.dll

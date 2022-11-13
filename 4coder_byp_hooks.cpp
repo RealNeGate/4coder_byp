@@ -9,6 +9,17 @@ CUSTOM_DOC("Responding to a startup event")
 		load_themes_default_folder(app);
 		default_4coder_initialize(app, file_names);
 
+        Buffer_ID buffer = create_buffer(app, string_u8_litexpr("*tree*"),
+            BufferCreate_NeverAttachToFile |
+            BufferCreate_AlwaysNew);
+        buffer_set_setting(app, buffer, BufferSetting_Unimportant, true);
+        buffer_set_setting(app, buffer, BufferSetting_ReadOnly, true);
+
+        buffer = create_buffer(app, string_u8_litexpr("*query*"),
+            BufferCreate_NeverAttachToFile |
+            BufferCreate_AlwaysNew);
+        buffer_set_setting(app, buffer, BufferSetting_Unimportant, true);
+
 		/*
         Buffer_ID buffer = create_buffer(app, string_u8_litexpr("*peek*"),
             BufferCreate_NeverAttachToFile|BufferCreate_AlwaysNew);
@@ -54,7 +65,7 @@ CUSTOM_DOC("Responding to a startup event")
 	Face_Description desc = get_global_face_description(app);
 	desc.parameters.pt_size -= 2;
 	desc.parameters.bold = 1;
-	desc.parameters.italic = 1;
+	desc.parameters.italic = 0;
 	desc.parameters.hinting = 0;
 	byp_small_italic_face = try_create_new_face(app, &desc);
 
@@ -62,14 +73,14 @@ CUSTOM_DOC("Responding to a startup event")
 	desc.parameters.bold = 0;
 	byp_minimal_face = try_create_new_face(app, &desc);
 
-	system_set_fullscreen(true);
-	set_window_title(app, string_u8_litexpr("4coder BYP"));
+	system_set_fullscreen(false);
+	set_window_title(app, string_u8_litexpr("4coder BYP but Cooler"));
 
 	byp_relative_numbers = 1;
 	byp_show_hex_colors = 1;
 	byp_show_scrollbars = 0;
 
-	Color_Table *table = get_color_table_by_name(string_u8_litexpr("theme-byp"));
+	Color_Table *table = get_color_table_by_name(string_u8_litexpr("theme-negate"));
 	if(table == 0){ table = &default_color_table; }
 	target_color_table = byp_init_color_table(app);
 	cached_color_table = byp_init_color_table(app);
@@ -78,16 +89,35 @@ CUSTOM_DOC("Responding to a startup event")
 	active_color_table = cached_color_table;
 }
 
+BUFFER_HOOK_SIG(byp_begin_buffer){
+	//default_begin_buffer(app, buffer_id);
+	//fold_begin_buffer_hook(app, buffer_id);
+    ts_BeginBuffer(app, buffer_id);
+	vim_begin_buffer_inner(app, buffer_id);
+	return 0;
+}
+
+BUFFER_EDIT_RANGE_SIG(byp_buffer_edit_range){
+	//default_buffer_edit_range(app, buffer_id, new_range, old_cursor_range);
+    ts_BufferEditRange(app, buffer_id, new_range, old_cursor_range);
+	// fold_buffer_edit_range_inner(app, buffer_id, new_range, old_cursor_range);
+	return 0;
+}
+
 function void
 byp_tick(Application_Links *app, Frame_Info frame_info){
-	code_index_update_tick(app);
+    View_ID view = get_active_view(app, Access_ReadVisible);
+    wb_4c_tick(app, view);
+    
+	ts_Tick(app, frame_info);
+    code_index_update_tick(app);
 	if(tick_all_fade_ranges(app, frame_info.animation_dt)){
 		animate_in_n_milliseconds(app, 0);
 	}
 
 	vim_animate_filebar(app, frame_info);
 	vim_animate_cursor(app, frame_info);
-	fold_tick(app, frame_info);
+	// fold_tick(app, frame_info);
 	byp_tick_colors(app, frame_info);
 
 	vim_cursor_blink++;
@@ -103,6 +133,7 @@ byp_tick(Application_Links *app, Frame_Info frame_info){
 function void
 byp_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id){
 	ProfileScope(app, "default render caller");
+	Scratch_Block scratch(app);
 
 	Buffer_ID buffer = view_get_buffer(app, view_id, Access_Always);
 
@@ -115,7 +146,7 @@ byp_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id
 	Rect_f32 prev_clip = draw_set_clip(app, region);
 
 	Rect_f32 global_rect = global_get_screen_rectangle(app);
-	f32 filebar_y = global_rect.y1 - 2.f*line_height - vim_cur_filebar_offset;
+	f32 filebar_y = global_rect.y1 - 1.f*line_height - vim_cur_filebar_offset;
 	if(region.y1 >= filebar_y){ region.y1 = filebar_y; }
 
 	draw_rectangle_fcolor(app, region, 0.f, fcolor_id(defcolor_back));
@@ -162,10 +193,10 @@ byp_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id
 	// NOTE(allen): layout line numbers
 	b32 show_line_number_margins = def_get_config_b32(vars_save_string_lit("show_line_number_margins"));
 	Rect_f32_Pair pair = (show_line_number_margins ?
-						  (byp_relative_numbers ?
-						   vim_line_number_margin(app, buffer, region, digit_advance) :
-						   layout_line_number_margin(app, buffer, region, digit_advance)) :
-						  rect_split_left_right(region, 1.5f*digit_advance));
+        (byp_relative_numbers ?
+            vim_line_number_margin(app, buffer, region, digit_advance) :
+            layout_line_number_margin(app, buffer, region, digit_advance)) :
+        rect_split_left_right(region, 1.5f*digit_advance));
 	Rect_f32 line_number_rect = pair.min;
 	region = pair.max;
 
@@ -202,6 +233,7 @@ byp_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id
 		text_layout_free(app, shadow_layout_id);
 	}
 
+    // jpts_render_buffer(app, view_id, face_id, buffer, text_layout_id, region);
 	byp_render_buffer(app, view_id, face_id, buffer, text_layout_id, region);
 
 	/// NOTE(BYP): If 4coder gets even smaller fonts (smaller than u32=0) this *might* be viable
@@ -239,7 +271,7 @@ byp_buffer_region(Application_Links *app, View_ID view_id, Rect_f32 region){
 	f32 digit_advance = metrics.decimal_digit_advance;
 
 	Rect_f32 global_rect = global_get_screen_rectangle(app);
-	f32 filebar_y = global_rect.y1 - 2.f*line_height - vim_cur_filebar_offset;
+	f32 filebar_y = global_rect.y1 - 1.f*line_height - vim_cur_filebar_offset;
 	if(region.y1 >= filebar_y){
 		region.y1 = filebar_y;
 	}
@@ -273,10 +305,10 @@ byp_buffer_region(Application_Links *app, View_ID view_id, Rect_f32 region){
 
 	b32 show_line_number_margins = def_get_config_b32(vars_save_string_lit("show_line_number_margins"));
 	region = (show_line_number_margins ?
-			  (byp_relative_numbers ?
-			   vim_line_number_margin(app, buffer, region, digit_advance) :
-			   layout_line_number_margin(app, buffer, region, digit_advance)) :
-			  rect_split_left_right(region, 1.5f*digit_advance)).max;
+        (byp_relative_numbers ?
+            vim_line_number_margin(app, buffer, region, digit_advance) :
+            layout_line_number_margin(app, buffer, region, digit_advance)) :
+        rect_split_left_right(region, 1.5f*digit_advance)).max;
 
 	return region;
 }
@@ -290,8 +322,13 @@ byp_whole_screen_render_caller(Application_Links *app, Frame_Info frame_info){
 BUFFER_HOOK_SIG(byp_file_save){
 	default_file_save(app, buffer_id);
 	vim_file_save(app, buffer_id);
-	auto_indent_buffer(app, buffer_id, buffer_range(app, buffer_id));
-	clean_all_lines_buffer(app, buffer_id, CleanAllLinesMode_RemoveBlankLines);
+
+    b32 auto_indent = def_get_config_b32(vars_save_string_lit("automatically_indent_text_on_save"));
+    if (auto_indent) {
+        auto_indent_buffer(app, buffer_id, buffer_range(app, buffer_id));
+    }
+
+    clean_all_lines_buffer(app, buffer_id, CleanAllLinesMode_RemoveBlankLines);
 
 	Scratch_Block scratch(app);
 	String_Const_u8 unique_name = push_buffer_unique_name(app, scratch, buffer_id);

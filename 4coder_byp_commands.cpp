@@ -15,6 +15,37 @@ DECLARE_TOGGLE(show_scrollbars);
 DECLARE_TOGGLE(drop_shadow);
 
 
+CUSTOM_COMMAND_SIG(negate_exec_cli)
+CUSTOM_DOC("runs the system command as a CLI and prints the output to the compilation buffer."){
+    internal u8 my_hot_directory_space[1024];
+	internal u8 my_command_space[1024];
+
+	Scratch_Block scratch(app);
+    Query_Bar_Group group(app);
+
+	Query_Bar bar_cmd = {};
+    bar_cmd.prompt = string_u8_litexpr("Command: ");
+    bar_cmd.string = SCu8(my_command_space, (u64)0);
+    bar_cmd.string_capacity = sizeof(command_space);
+    if (!query_user_string(app, &bar_cmd)) return;
+    bar_cmd.string.size = clamp_top(bar_cmd.string.size, sizeof(command_space) - 1);
+    my_command_space[bar_cmd.string.size] = 0;
+
+    String_Const_u8 hot = push_hot_directory(app, scratch);
+    {
+        u64 size = clamp_top(hot.size, sizeof(hot_directory_space));
+        block_copy(my_hot_directory_space, hot.str, size);
+        my_hot_directory_space[hot.size] = 0;
+    }
+
+	if (bar_cmd.string.size > 0 && hot.size > 0){
+        View_ID view = get_active_view(app, Access_Always);
+        Buffer_Identifier id = buffer_identifier(SCu8("*compilation*"));
+        exec_system_command(app, view, id, hot, SCu8(my_command_space), CLI_OverlapWithConflict|CLI_CursorAtEnd|CLI_SendEndSignal);
+        lock_jump_buffer(app, SCu8("*compilation*"));
+    }
+}
+
 CUSTOM_COMMAND_SIG(byp_test)
 CUSTOM_DOC("Just bound to the key I spam to execute whatever test code I'm working on")
 {
@@ -53,8 +84,8 @@ CUSTOM_DOC("Toggles the column ruler. Set to cursor column when on.")
 {
 	View_ID view = get_active_view(app, Access_ReadVisible);
 	byp_col_cursor = (byp_col_cursor.pos != 0 ?
-					  Buffer_Cursor{} :
-					  view_compute_cursor(app, view, seek_pos(view_get_cursor_pos(app, view))));
+        Buffer_Cursor{} :
+        view_compute_cursor(app, view, seek_pos(view_get_cursor_pos(app, view))));
 }
 
 CUSTOM_COMMAND_SIG(byp_space)
@@ -80,67 +111,31 @@ CUSTOM_DOC("When column ruler is set, spaces towards that, else just inserts one
 	}else{ write_space(app); }
 }
 
-
-global b32 byp_bracket_opened;
-
-CUSTOM_COMMAND_SIG(byp_write_text_input)
-CUSTOM_DOC("Inserts whatever text was used to trigger this command.")
-{
-	User_Input in = get_current_input(app);
-	String_Const_u8 insert = to_writable(&in);
-	byp_bracket_opened = insert.str[insert.size-1] == '{';
-	write_text(app, insert);
-}
-
-CUSTOM_COMMAND_SIG(byp_auto_complete_bracket)
-CUSTOM_DOC("Sets the right size of the view near the x position of the cursor.")
-{
-	View_ID view = get_active_view(app, Access_ReadWriteVisible);
-	i64 pos = view_get_character_legal_pos_from_pos(app, view, view_get_cursor_pos(app, view));
-	Buffer_ID buffer = view_get_buffer(app, view, Access_ReadWriteVisible);
-	Token_Array token_array = get_token_array_from_buffer(app, buffer);
-	if(token_array.tokens == 0){
-		if(byp_bracket_opened){
-			write_text(app, string_u8_litexpr("\n\n}"));
-			move_up(app);
-			byp_bracket_opened = 0;
-			return;
-		}else{
-			goto byp_default_return;
-		}
-	}
-
-	i64 first_index = token_index_from_pos(&token_array, pos);
-	Token_Iterator_Array it = token_iterator_index(0, token_array.tokens, token_array.count, first_index);
-	if(!token_it_dec(&it)){ goto byp_default_return; }
-
-	Token *token = token_it_read(&it);
-	if(token && byp_bracket_opened && buffer_get_char(app, buffer, token->pos) == '{'){
-		token_it_dec(&it);
-		token = token_it_read(&it);
-		if(token->kind == TokenBaseKind_Identifier){
-			if(!token_it_dec(&it)){ goto byp_default_return; }
-			token = token_it_read(&it);
-		}
-		String_Const_u8 insert = string_u8_litexpr("\n\n};");
-		insert.size -= (token->kind != byp_TokenKind_Struct);
-		write_text(app, insert);
-		move_up(app);
-		byp_bracket_opened = 0;
-		return;
-	}
-
-	byp_default_return:
-	write_text(app, string_u8_litexpr("\n"));
-	byp_bracket_opened = 0;
-}
-
 CUSTOM_COMMAND_SIG(explorer)
 CUSTOM_DOC("Opens file explorer in hot directory")
 {
 	Scratch_Block scratch(app);
 	String_Const_u8 hot = push_hot_directory(app, scratch);
 	exec_system_command(app, 0, buffer_identifier(0), hot, string_u8_litexpr("explorer ."), 0);
+}
+
+CUSTOM_COMMAND_SIG(byp_write_indent)
+CUSTOM_DOC("Inserts tabs or spaces to make one indent.")
+{
+	Scratch_Block scratch(app);
+    b32 indent_with_tabs = def_get_config_b32(vars_save_string_lit("indent_with_tabs"));
+    if (indent_with_tabs) {
+        write_text(app, string_u8_litexpr("\t"));
+    } else {
+	    i32 indent_width = (i32)def_get_config_u64(app, vars_save_string_lit("indent_width"));
+	    indent_width = clamp_bot(1, indent_width);
+
+        u8* temp = push_array(scratch, u8, indent_width);
+        foreach(i,indent_width) temp[i] = ' ';
+
+        String_Const_u8 string = {temp, (u64)indent_width};
+        write_text(app, string);
+    }
 }
 
 function void
@@ -252,7 +247,7 @@ VIM_REQUEST_SIG(byp_apply_title){
 	u8 prev = buffer_get_char(app, buffer, range.min-1);
 	for(i32 i=0; i<text.size; i++){
 		text.str[i] += u8(i32('A' - 'a')*((!character_is_alpha(prev) || prev == '_') &&
-										  character_is_lower(text.str[i])));
+                character_is_lower(text.str[i])));
 		prev = text.str[i];
 	}
 	buffer_replace_range(app, buffer, range, text);

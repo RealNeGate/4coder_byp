@@ -1,6 +1,9 @@
 #pragma once
 
+#if OS_WINDOWS
 #define SNIPPET_EXPANSION "4coder_byp_snippets.inc"
+#endif
+
 #include "4coder_tree_sitter.cpp"
 
 CUSTOM_ID(colors, defcolor_base2);
@@ -21,7 +24,7 @@ CUSTOM_ID(colors, defcolor_non_text);
 #include "4coder_lsp.h"
 
 #include "4coder_vimrc.h"
-#include "4coder_vim\\4coder_vim_include.h"
+#include "4coder_vim/4coder_vim_include.h"
 
 #include "4coder_byp_helper.h"
 

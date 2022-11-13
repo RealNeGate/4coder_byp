@@ -191,5 +191,4 @@ function void byp_draw_token_colors(Application_Links *app, View_ID view, Buffer
         }
     }
     if(do_cursor_tok_highlight){ draw_rectangle(app, cursor_tok_rect, 5.f, cursor_tok_color); }
-
 }

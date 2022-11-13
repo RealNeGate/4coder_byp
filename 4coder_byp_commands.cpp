@@ -2,17 +2,27 @@
 global Face_ID byp_small_italic_face;
 global Face_ID byp_minimal_face;
 
-// NOTE(BYP): Don't do this. Do as I say, not as I do
-#define DECLARE_TOGGLE(name) \
-global b32 byp_##name; \
-CUSTOM_COMMAND_SIG(byp_toggle_##name) \
-CUSTOM_DOC(stringify(glue(glue(Toggles value for `, name), `))) \
-{ byp_##name ^= 1; }
 
-DECLARE_TOGGLE(show_hex_colors);
-DECLARE_TOGGLE(relative_numbers);
-DECLARE_TOGGLE(show_scrollbars);
-DECLARE_TOGGLE(drop_shadow);
+global b32 byp_show_hex_colors;
+global b32 byp_relative_numbers;
+global b32 byp_show_scrollbars;
+global b32 byp_drop_shadow;
+
+CUSTOM_COMMAND_SIG(byp_toggle_show_hex_colors)
+CUSTOM_DOC("Toggles value for `show_hex_colors`")
+{ byp_show_hex_colors ^= 1; }
+
+CUSTOM_COMMAND_SIG(byp_toggle_relative_numbers)
+CUSTOM_DOC("Toggles value for `relative_numbers`")
+{ byp_relative_numbers ^= 1; }
+
+CUSTOM_COMMAND_SIG(byp_toggle_show_scrollbars)
+CUSTOM_DOC("Toggles value for `show_scrollbars`")
+{ byp_show_scrollbars ^= 1; }
+
+CUSTOM_COMMAND_SIG(byp_toggle_drop_shadow)
+CUSTOM_DOC("Toggles value for `drop_shadow`")
+{ byp_drop_shadow ^= 1; }
 
 
 CUSTOM_COMMAND_SIG(negate_exec_cli)
@@ -111,6 +121,61 @@ CUSTOM_DOC("When column ruler is set, spaces towards that, else just inserts one
 	}else{ write_space(app); }
 }
 
+global b32 byp_bracket_opened;
+
+CUSTOM_COMMAND_SIG(byp_write_text_input)
+CUSTOM_DOC("Inserts whatever text was used to trigger this command.")
+{
+	User_Input in = get_current_input(app);
+	String_Const_u8 insert = to_writable(&in);
+	byp_bracket_opened = insert.str[insert.size-1] == '{';
+	write_text(app, insert);
+}
+
+CUSTOM_COMMAND_SIG(byp_auto_complete_bracket)
+CUSTOM_DOC("Sets the right size of the view near the x position of the cursor.")
+{
+	View_ID view = get_active_view(app, Access_ReadWriteVisible);
+	i64 pos = view_get_character_legal_pos_from_pos(app, view, view_get_cursor_pos(app, view));
+	Buffer_ID buffer = view_get_buffer(app, view, Access_ReadWriteVisible);
+	Token_Array token_array = get_token_array_from_buffer(app, buffer);
+	do{
+		if(token_array.tokens == 0){
+			if(byp_bracket_opened){
+				write_text(app, string_u8_litexpr("\n\n}"));
+				move_up(app);
+				byp_bracket_opened = 0;
+				return;
+			}else{
+				break;
+			}
+		}
+
+		i64 first_index = token_index_from_pos(&token_array, pos);
+		Token_Iterator_Array it = token_iterator_index(0, token_array.tokens, token_array.count, first_index);
+		if(!token_it_dec(&it)){ break; }
+
+		Token *token = token_it_read(&it);
+		if(token && byp_bracket_opened && buffer_get_char(app, buffer, token->pos) == '{'){
+			token_it_dec(&it);
+			token = token_it_read(&it);
+			if(token->kind == TokenBaseKind_Identifier){
+				if(!token_it_dec(&it)){ break; }
+				token = token_it_read(&it);
+			}
+			String_Const_u8 insert = string_u8_litexpr("\n\n};");
+			insert.size -= (token->kind != byp_TokenKind_Struct);
+			write_text(app, insert);
+			move_up(app);
+			byp_bracket_opened = 0;
+			return;
+		}
+	}while(0);
+
+	write_text(app, string_u8_litexpr("\n"));
+	byp_bracket_opened = 0;
+}
+
 CUSTOM_COMMAND_SIG(explorer)
 CUSTOM_DOC("Opens file explorer in hot directory")
 {
@@ -158,7 +223,7 @@ CUSTOM_DOC("Lists locations of selection range")
 	Range_i64 range = get_view_range(app, view);
 	range.max++;
 
-    Scratch_Block scratch(app);
+	Scratch_Block scratch(app);
 	String_Const_u8 range_string = push_buffer_range(app, scratch, buffer, range);
 	list_all_locations__generic(app, range_string, ListAllLocationsFlag_CaseSensitive|ListAllLocationsFlag_MatchSubstring);
 }
@@ -245,7 +310,7 @@ VIM_REQUEST_SIG(byp_apply_title){
 	Scratch_Block scratch(app);
 	String_Const_u8 text = push_buffer_range(app, scratch, buffer, range);
 	u8 prev = buffer_get_char(app, buffer, range.min-1);
-	for(i32 i=0; i<text.size; i++){
+	foreach(i, text.size){
 		text.str[i] += u8(i32('A' - 'a')*((!character_is_alpha(prev) || prev == '_') &&
                 character_is_lower(text.str[i])));
 		prev = text.str[i];

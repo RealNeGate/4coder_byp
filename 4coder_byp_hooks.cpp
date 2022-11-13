@@ -338,7 +338,28 @@ BUFFER_HOOK_SIG(byp_file_save){
 		String_Const_u8 theme_name = string_chop(unique_name, postfix.size);
 		for(Color_Table_Node *node = global_theme_list.first; node; node=node->next){
 			if(string_match(node->name, theme_name)){
-				load_theme_current_buffer(app);
+				Color_Table color_table = make_color_table(app, scratch);
+				Config *config = theme_parse__buffer(app, scratch, buffer_id, scratch, &color_table);
+				String_Const_u8 error_text = config_stringize_errors(app, scratch, config);
+				print_message(app, error_text);
+
+				u64 problem_score = 0;
+				if(color_table.count < defcolor_line_numbers_text){
+					problem_score = defcolor_line_numbers_text - color_table.count;
+				}
+				foreach(i, color_table.count){
+					problem_score += (color_table.arrays[i].count == 0);
+				}
+
+				if(0 < error_text.size || 10 <= problem_score){
+					String_Const_u8 string = push_u8_stringf(scratch, "There appears to be a problem parsing %.*s; no theme change applied\n", string_expand(theme_name));
+					print_message(app, string);
+				}else{
+					print_message(app, string_u8_litexpr("Copied color theme\n"));
+					byp_copy_color_table(&node->table, color_table);
+					byp_copy_color_table(&target_color_table, color_table);
+				}
+
 				break;
 			}
 		}

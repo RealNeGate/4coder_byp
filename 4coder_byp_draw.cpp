@@ -315,153 +315,6 @@ byp_draw_scope_brackets(Application_Links *app, View_ID view, Buffer_ID buffer, 
 	}
 }
 
-
-#if 1
-function void
-byp_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
-    Buffer_ID buffer, Text_Layout_ID text_layout_id,
-    Rect_f32 rect)
-{
-    ProfileScope(app, "render buffer");
-
-    View_ID active_view = get_active_view(app, Access_Always);
-    b32 is_active_view = (active_view == view_id);
-    Rect_f32 prev_clip = draw_set_clip(app, rect);
-
-    Range_i64 visible_range = text_layout_get_visible_range(app, text_layout_id);
-
-    // NOTE(allen): Cursor shape
-    Face_Metrics metrics = get_face_metrics(app, face_id);
-    u64 cursor_roundness_100 = def_get_config_u64(app, vars_save_string_lit("cursor_roundness"));
-    f32 cursor_roundness = metrics.normal_advance*cursor_roundness_100*0.01f;
-    f32 mark_thickness = (f32)def_get_config_u64(app, vars_save_string_lit("mark_thickness"));
-
-    // NOTE(allen): Token colorizing
-    Token_Array token_array = get_token_array_from_buffer(app, buffer);
-
-    Managed_Scope scope = buffer_get_managed_scope(app, buffer);
-    JPTS_Data*tree_data = scope_attachment(app, scope, ts_data, JPTS_Data);
-    TSTree *tree = jpts_buffer_get_tree(tree_data);
-
-    // Paint the default color for the entire ranage, specific colors will be overwritten by the tree query
-    paint_text_color_fcolor(app, text_layout_id, visible_range, fcolor_id(defcolor_text_default));
-    if (tree && token_array.tokens != 0){
-        if (use_ts_highlighting) {
-            jpts_draw_node_colors(app, text_layout_id, buffer);
-        } else {
-            draw_cpp_token_colors(app, text_layout_id, &token_array);
-        }
-
-        // NOTE(allen): Scan for TODOs and NOTEs
-        b32 use_comment_keyword = def_get_config_b32(vars_save_string_lit("use_comment_keywords"));
-        if (use_comment_keyword){
-            ProfileScope(app, "draw_comment_highlights");
-            Comment_Highlight_Pair pairs[] = {
-                {string_u8_litexpr("NOTE"), finalize_color(defcolor_comment_pop, 0)},
-                {string_u8_litexpr("TODO"), finalize_color(defcolor_comment_pop, 1)},
-            };
-            draw_comment_highlights(app, buffer, text_layout_id, &token_array, pairs, ArrayCount(pairs));
-        }
-    }
-
-    i64 cursor_pos = view_correct_cursor(app, view_id);
-    view_correct_mark(app, view_id);
-
-    // NOTE(allen): Scope highlight
-    b32 use_scope_highlight = def_get_config_b32(vars_save_string_lit("use_scope_highlight"));
-    if (use_scope_highlight){
-        Color_Array colors = finalize_color_array(defcolor_back_cycle);
-        draw_scope_highlight(app, buffer, text_layout_id, cursor_pos, colors.vals, colors.count);
-    }
-
-    b32 use_error_highlight = def_get_config_b32(vars_save_string_lit("use_error_highlight"));
-    b32 use_jump_highlight = def_get_config_b32(vars_save_string_lit("use_jump_highlight"));
-    if (use_error_highlight || use_jump_highlight){
-        // NOTE(allen): Error highlight
-        String_Const_u8 name = string_u8_litexpr("*compilation*");
-        Buffer_ID compilation_buffer = get_buffer_by_name(app, name, Access_Always);
-        if (use_error_highlight){
-            draw_jump_highlights(app, buffer, text_layout_id, compilation_buffer,
-                fcolor_id(defcolor_highlight_junk));
-        }
-
-        // NOTE(allen): Search highlight
-        if (use_jump_highlight){
-            Buffer_ID jump_buffer = get_locked_jump_buffer(app);
-            if (jump_buffer != compilation_buffer){
-                draw_jump_highlights(app, buffer, text_layout_id, jump_buffer,
-                    fcolor_id(defcolor_highlight_white));
-            }
-        }
-    }
-
-    // NOTE(allen): Color parens
-    b32 use_paren_helper = def_get_config_b32(vars_save_string_lit("use_paren_helper"));
-    if (use_paren_helper){
-        Color_Array colors = finalize_color_array(defcolor_text_cycle);
-        draw_paren_highlight(app, buffer, text_layout_id, cursor_pos, colors.vals, colors.count);
-    }
-
-    // NOTE(allen): Line highlight
-    b32 highlight_line_at_cursor = def_get_config_b32(vars_save_string_lit("highlight_line_at_cursor"));
-    if (highlight_line_at_cursor && is_active_view){
-        i64 line_number = get_line_number_from_pos(app, buffer, cursor_pos);
-        draw_line_highlight(app, text_layout_id, line_number, fcolor_id(defcolor_highlight_cursor_line));
-    }
-
-	byp_draw_scope_brackets(app, view_id, buffer, text_layout_id, rect, cursor_pos);
-
-    // NOTE(allen): Whitespace highlight
-    b64 show_whitespace = false;
-    view_get_setting(app, view_id, ViewSetting_ShowWhitespace, &show_whitespace);
-    if (show_whitespace){
-        if (token_array.tokens == 0){
-            draw_whitespace_highlight(app, buffer, text_layout_id, cursor_roundness);
-        }
-        else{
-            draw_whitespace_highlight(app, text_layout_id, &token_array, cursor_roundness);
-        }
-    }
-
-	if(is_active_view && vim_state.mode == VIM_Visual){
-		vim_draw_visual_mode(app, view_id, buffer, face_id, text_layout_id);
-	}
-
-	// fold_draw(app, buffer, text_layout_id);
-
-	vim_draw_search_highlight(app, view_id, buffer, text_layout_id, cursor_roundness);
-
-    // NOTE(allen): Cursor
-    switch (fcoder_mode){
-        case FCoderMode_Original:
-        {
-		    vim_draw_cursor(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness);
-            // draw_original_4coder_style_cursor_mark_highlight(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness);
-        }break;
-        case FCoderMode_NotepadLike:
-        {
-            draw_notepad_style_cursor_highlight(app, view_id, buffer, text_layout_id, cursor_roundness);
-        }break;
-    }
-
-    // NOTE(allen): Fade ranges
-    paint_fade_ranges(app, text_layout_id, buffer);
-
-    // NOTE(allen): put the actual text on the actual screen
-    {
-        ProfileScope(app, "draw_text_layout_default");
-        draw_text_layout_default(app, text_layout_id);
-    }
-
-	vim_draw_after_text(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness);
-	if(is_active_view){
-		byp_draw_function_preview(app, buffer, If32(rect.x0, rect.x1), cursor_pos);
-	}
-
-    ts_tree_delete(tree);
-    draw_set_clip(app, prev_clip);
-}
-#else
 function void
 byp_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buffer_ID buffer, Text_Layout_ID text_layout_id, Rect_f32 rect){
 	ProfileScope(app, "render buffer");
@@ -519,7 +372,6 @@ byp_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buff
 		Color_Array colors = finalize_color_array(defcolor_back_cycle);
 		draw_scope_highlight(app, buffer, text_layout_id, cursor_pos, colors.vals, colors.count);
 	}
-
 	b32 use_error_highlight = def_get_config_b32(vars_save_string_lit("use_error_highlight"));
 	b32 use_jump_highlight  = def_get_config_b32(vars_save_string_lit("use_jump_highlight"));
 	if(use_error_highlight || use_jump_highlight){
@@ -556,9 +408,9 @@ byp_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buff
 		}
 	}
 
-	/*if(byp_show_hex_colors){
+	if(byp_show_hex_colors){
 		byp_hex_color_preview(app, buffer, text_layout_id);
-	}*/
+	}
 
 	if(is_active_view && vim_state.mode == VIM_Visual){
 		vim_draw_visual_mode(app, view_id, buffer, face_id, text_layout_id);
@@ -586,4 +438,3 @@ byp_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buff
 
 	draw_set_clip(app, prev_clip);
 }
-#endif

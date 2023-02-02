@@ -9,17 +9,6 @@ CUSTOM_DOC("Responding to a startup event")
 		load_themes_default_folder(app);
 		default_4coder_initialize(app, file_names);
 
-        Buffer_ID buffer = create_buffer(app, string_u8_litexpr("*tree*"),
-            BufferCreate_NeverAttachToFile |
-            BufferCreate_AlwaysNew);
-        buffer_set_setting(app, buffer, BufferSetting_Unimportant, true);
-        buffer_set_setting(app, buffer, BufferSetting_ReadOnly, true);
-
-        buffer = create_buffer(app, string_u8_litexpr("*query*"),
-            BufferCreate_NeverAttachToFile |
-            BufferCreate_AlwaysNew);
-        buffer_set_setting(app, buffer, BufferSetting_Unimportant, true);
-
 		/*
         Buffer_ID buffer = create_buffer(app, string_u8_litexpr("*peek*"),
             BufferCreate_NeverAttachToFile|BufferCreate_AlwaysNew);
@@ -90,16 +79,16 @@ CUSTOM_DOC("Responding to a startup event")
 }
 
 BUFFER_HOOK_SIG(byp_begin_buffer){
-	//default_begin_buffer(app, buffer_id);
-	//fold_begin_buffer_hook(app, buffer_id);
-    ts_BeginBuffer(app, buffer_id);
+	default_begin_buffer(app, buffer_id);
+	// fold_begin_buffer_hook(app, buffer_id);
+    // ts_BeginBuffer(app, buffer_id);
 	vim_begin_buffer_inner(app, buffer_id);
 	return 0;
 }
 
 BUFFER_EDIT_RANGE_SIG(byp_buffer_edit_range){
-	//default_buffer_edit_range(app, buffer_id, new_range, old_cursor_range);
-    ts_BufferEditRange(app, buffer_id, new_range, old_cursor_range);
+	default_buffer_edit_range(app, buffer_id, new_range, old_cursor_range);
+    vim_buffer_edit_range(app, buffer_id, new_range, old_cursor_range);
 	// fold_buffer_edit_range_inner(app, buffer_id, new_range, old_cursor_range);
 	return 0;
 }
@@ -108,9 +97,7 @@ function void
 byp_tick(Application_Links *app, Frame_Info frame_info){
     View_ID view = get_active_view(app, Access_ReadVisible);
     wb_4c_tick(app, view);
-    
-	ts_Tick(app, frame_info);
-    code_index_update_tick(app);
+
 	if(tick_all_fade_ranges(app, frame_info.animation_dt)){
 		animate_in_n_milliseconds(app, 0);
 	}
@@ -323,8 +310,7 @@ BUFFER_HOOK_SIG(byp_file_save){
 	default_file_save(app, buffer_id);
 	vim_file_save(app, buffer_id);
 
-    b32 auto_indent = def_get_config_b32(vars_save_string_lit("automatically_indent_text_on_save"));
-    if (auto_indent) {
+    if (byp_auto_indent) {
         auto_indent_buffer(app, buffer_id, buffer_range(app, buffer_id));
     }
 

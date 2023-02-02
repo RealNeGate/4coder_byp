@@ -1,4 +1,6 @@
 
+#define apple pear
+
 function b32
 byp_highlight_token(Token_Base_Kind kind){
 	switch(kind){
@@ -12,7 +14,6 @@ byp_highlight_token(Token_Base_Kind kind){
 	}
 	return false;
 }
-
 
 function ARGB_Color
 byp_get_token_color_cpp(Token token){
@@ -168,7 +169,7 @@ function void byp_draw_token_colors(Application_Links *app, View_ID view, Buffer
         if(!token_it_inc_non_whitespace(&it)){ break; }
         Token *token = token_it_read(&it);
         if (token->pos >= visible_range.max) break;
-        
+
 		String_Const_u8 lexeme = push_token_lexeme(app, scratch, buffer, token);
         Code_Index_Note *note = code_index_note_from_string(lexeme);
 

@@ -14,12 +14,8 @@ byp_essential_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id)
 
 	SelectMap(file_id);
 	ParentMap(global_id);
-    b32 auto_indent = def_get_config_b32(vars_save_string_lit("automatically_indent_text_on_save"));
-    if (auto_indent) {
-	    BindTextInput(write_text_and_auto_indent);
-    } else {
-        BindTextInput(write_text_input);
-    }
+	byp_auto_indent = def_get_config_b32(vars_save_string_lit("automatically_indent_text_on_save"));
+	BindTextInput(byp_write_text_input);
 	BindMouse(click_set_cursor_and_mark, MouseCode_Left);
 	BindMouseRelease(click_set_cursor, MouseCode_Left);
 	BindCore(click_set_cursor_and_mark, CoreCode_ClickActivateView);

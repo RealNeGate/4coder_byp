@@ -2,32 +2,18 @@
 global Face_ID byp_small_italic_face;
 global Face_ID byp_minimal_face;
 
+// NOTE(BYP): Don't do this. Do as I say, not as I do
+#define DECLARE_TOGGLE(name) \
+global b32 byp_##name; \
+CUSTOM_COMMAND_SIG(byp_toggle_##name) \
+CUSTOM_DOC(stringify(glue(glue(Toggles value for `, name), `))) \
+{ byp_##name ^= 1; }
 
-global b32 byp_show_hex_colors;
-global b32 byp_relative_numbers;
-global b32 byp_show_scrollbars;
-global b32 byp_drop_shadow;
-global b32 byp_auto_indent;
-
-CUSTOM_COMMAND_SIG(byp_toggle_show_hex_colors)
-CUSTOM_DOC("Toggles value for `show_hex_colors`")
-{ byp_show_hex_colors ^= 1; }
-
-CUSTOM_COMMAND_SIG(byp_toggle_relative_numbers)
-CUSTOM_DOC("Toggles value for `relative_numbers`")
-{ byp_relative_numbers ^= 1; }
-
-CUSTOM_COMMAND_SIG(byp_toggle_show_scrollbars)
-CUSTOM_DOC("Toggles value for `show_scrollbars`")
-{ byp_show_scrollbars ^= 1; }
-
-CUSTOM_COMMAND_SIG(byp_toggle_drop_shadow)
-CUSTOM_DOC("Toggles value for `drop_shadow`")
-{ byp_drop_shadow ^= 1; }
-
-CUSTOM_COMMAND_SIG(byp_toggle_auto_indent)
-CUSTOM_DOC("Toggles value for `auto_indent`")
-{ byp_auto_indent ^= 1; }
+DECLARE_TOGGLE(show_hex_colors);
+DECLARE_TOGGLE(relative_numbers);
+DECLARE_TOGGLE(show_scrollbars);
+DECLARE_TOGGLE(drop_shadow);
+DECLARE_TOGGLE(auto_indent);
 
 internal void
 miller_render(Application_Links *app, Frame_Info frame_info, View_ID view){
@@ -206,8 +192,6 @@ CUSTOM_DOC("When column ruler is set, spaces towards that, else just inserts one
         foreach(i,N){ write_space(app); }
     }else{ write_space(app); }
 }
-
-global b32 byp_bracket_opened;
 
 CUSTOM_COMMAND_SIG(byp_write_text_input)
 CUSTOM_DOC("Inserts whatever text was used to trigger this command.")
@@ -396,7 +380,7 @@ VIM_REQUEST_SIG(byp_apply_title){
     u8 prev = buffer_get_char(app, buffer, range.min-1);
     foreach(i, text.size){
         text.str[i] += u8(i32('A' - 'a')*((!character_is_alpha(prev) || prev == '_') &&
-                character_is_lower(text.str[i])));
+        character_is_lower(text.str[i])));
         prev = text.str[i];
     }
     buffer_replace_range(app, buffer, range, text);

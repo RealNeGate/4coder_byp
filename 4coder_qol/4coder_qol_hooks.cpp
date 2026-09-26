@@ -98,15 +98,25 @@ CUSTOM_DOC("QOL command for responding to a startup event")
 
 function void
 qol_tick(Application_Links *app, Frame_Info frame_info){
-  default_tick(app, frame_info);
+  qol_code_index_update_tick(app);
 
   f32 dt = frame_info.animation_dt;
+
+  if (tick_all_fade_ranges(app, dt)){
+    animate_in_n_milliseconds(app, 0);
+  }
 
   vim_tick(app, frame_info);
 
   qol_interp(qol_cur_cursor_pos, qol_nxt_cursor_pos, dt, 1e-14f);
   if (!near_zero(qol_cur_cursor_pos - qol_nxt_cursor_pos, 0.5f)){
     animate_in_n_milliseconds(app, 0);
+  }
+
+  b32 enable_vws = def_get_config_b32(vars_save_string_lit("enable_virtual_whitespace"));
+  if (enable_vws != def_enable_virtual_whitespace){
+    def_enable_virtual_whitespace = enable_vws;
+    clear_all_layouts(app);
   }
 
   b32 anchor = def_get_config_b32(vars_save_string_lit("anchor_pproc"));
@@ -171,6 +181,53 @@ BUFFER_HOOK_SIG(qol_file_save){
   return 0;
 }
 
+BUFFER_HOOK_SIG(qol_begin_buffer){
+  ProfileScope(app, "begin buffer");
+
+  Scratch_Block scratch(app);
+
+  Managed_Scope scope = buffer_get_managed_scope(app, buffer_id);
+  Lang_ID *lang_ptr = scope_attachment(app, scope, buffer_lang, Lang_ID);
+
+  b32 is_code = false;
+  String_Const_u8 file_name = push_buffer_file_name(app, scratch, buffer_id);
+  if (file_name.size > 0){
+    String_Const_u8 treat_as_code_string = def_get_config_string(scratch, vars_save_string_lit("treat_as_code"));
+    String_Const_u8_Array extensions = parse_extension_line_to_extension_list(scratch, treat_as_code_string);
+    String_Const_u8 ext = string_file_extension(file_name);
+    for (i32 i = 0; i < extensions.count; ++i){
+      if (!string_match(ext, extensions.strings[i])){ continue; }
+      is_code = true;
+      *lang_ptr = qol_lang_id_for_ext(ext);
+      break;
+    }
+  }
+
+  String_ID file_map_id = vars_save_string_lit("keys_file");
+  String_ID code_map_id = vars_save_string_lit("keys_code");
+  *scope_attachment(app, scope, buffer_map_id, Command_Map_ID) = (is_code ? code_map_id : file_map_id);
+
+  // NOTE(allen): Decide buffer settings
+  Line_Ending_Kind setting = guess_line_ending_kind_from_buffer(app, buffer_id);
+  *scope_attachment(app, scope, buffer_eol_setting, Line_Ending_Kind) = setting;
+
+  {
+    ProfileBlock(app, "begin buffer kick off lexer");
+    Async_Task *lex_task_ptr = scope_attachment(app, scope, buffer_lex_task, Async_Task);
+    *lex_task_ptr = async_task_no_dep(&global_async_system, qol_lang_full_lex_async, make_data_struct(&buffer_id));
+  }
+
+  b32 wrap_lines = (buffer_has_name_with_star(app, buffer_id) ?
+                    def_get_config_b32(vars_save_string_lit("enable_output_wrapping"));
+                    def_get_config_b32(vars_save_string_lit("enable_code_wrapping")));
+  *scope_attachment(app, scope, buffer_wrap_lines, b32) = wrap_lines;
+
+  buffer_set_layout(app, buffer_id, is_code ? layout_virt_indent_index_generic : layout_generic);
+
+  vim_begin_buffer_inner(app, buffer_id);
+  return 0;
+}
+
 CUSTOM_COMMAND_SIG(qol_view_input_handler)
 CUSTOM_DOC("QOL Input consumption loop for views")
 {
@@ -228,5 +285,6 @@ function i32 qol_buffer_edit_range(Application_Links *app, Buffer_ID buffer_id, 
 
   vim_buffer_edit_range_inner(app, buffer_id, new_range, old_cursor_range);
 
-  return MC_buffer_edit_range(app, buffer_id, new_range, old_cursor_range);
+  MC_buffer_edit_range_inner(app, buffer_id, new_range, old_cursor_range);
+  return qol_lang_buffer_edit_range(app, buffer_id, new_range, old_cursor_range);
 }

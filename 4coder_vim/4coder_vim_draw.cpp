@@ -193,7 +193,6 @@ vim_line_number_margin(Application_Links *app, Buffer_ID buffer, Rect_f32 rect, 
   return pair;
 }
 
-
 function void
 vim_draw_rel_line_number_margin(Application_Links *app, View_ID view, Buffer_ID buffer, Face_ID face, Text_Layout_ID text_layout_id, Rect_f32 margin){
   Rect_f32 prev_clip = draw_set_clip(app, margin);
@@ -306,7 +305,7 @@ vim_draw_abs_line_number_margin(Application_Links *app, View_ID view, Buffer_ID 
   i64 cur_line = view_compute_cursor(app, view, seek_pos(visible_range.min)).line;
   i64 end_line = view_compute_cursor(app, view, seek_pos(visible_range.max)).line+1;
 
-  u8 *small_digit = digit_buffer + (digit_count-1) - 1;
+  u8 *small_digit = digit_buffer + (digit_count-1);
   u8 *ptr = small_digit;
   if(cur_line == 0){ *ptr = '0'; }
   else{

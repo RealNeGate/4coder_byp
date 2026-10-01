@@ -35,6 +35,7 @@ function b32 MC_filter_command(Custom_Command_Function *func);
 #define CUSTOM_COMMAND_MC_PASTE_SIG(name)  CUSTOM_COMMAND_MC_SIG(name, 4) // 4 == MC_Command_CursorPaste
 
 #include "languages/qol_parser_helper.h"
+#include "languages/qol_languages.h"
 #include "4coder_default_include.cpp"
 #include "languages/cpp_parser.cpp"
 #include "languages/lua_parser.cpp"

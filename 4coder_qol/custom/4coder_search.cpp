@@ -291,6 +291,23 @@ get_complete_list_raw(Application_Links *app, Arena *arena, Buffer_ID buffer,
   return(result);
 }
 
+internal void
+word_complete_list_extend_from_index(Application_Links *app, Arena *arena, Buffer_ID buffer, String_Const_u8 needle, List_String_Const_u8 *list, Table_Data_u64 *used_table){
+  Lang_Spec *lang = qol_lang_for_buffer(app, buffer);
+  for (i64 i=0; i < ArrayCount(global_code_index.name_hash); i += 1){
+    for (Code_Index_Note *n = global_code_index.name_hash[i].first; n; n = n->next_in_hash){
+      if (lang->id != n->file->lang_id ||
+          !string_match(string_prefix(n->text, needle.size), needle)  ||
+          table_lookup(used_table, n->text).found_match){
+        continue;
+      }
+      String_Const_u8 data = push_data_copy(arena, n->text);
+      table_insert(used_table, data, 1);
+      string_list_push(arena, list, data);
+    }
+  }
+}
+
 function void
 word_complete_list_extend_from_raw(Application_Links *app, Arena *arena, String_Match_List *matches, List_String_Const_u8 *list, Table_Data_u64 *used_table){
   ProfileScope(app, "word complete list extend from raw");
@@ -333,6 +350,7 @@ word_complete_iter_init__inner(Buffer_ID buffer, String_Const_u8 needle, Range_i
 
   iter->already_used_table = make_table_Data_u64(allocator, 100);
   word_complete_list_extend_from_raw(app, arena, &list, &iter->list, &iter->already_used_table);
+  word_complete_list_extend_from_index(app, arena, buffer, needle, &iter->list, &iter->already_used_table);
 
   iter->scan_all_buffers = true;
 }

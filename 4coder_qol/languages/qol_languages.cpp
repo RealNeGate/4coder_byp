@@ -1,33 +1,9 @@
 
-CUSTOM_ID(attachment, buffer_lang);
-
-enum Lang_ID{
-  Lang_None,
-  Lang_Cpp,
-  Lang_4ed,
-  Lang_XSL,
-  Lang_Lua,
-  Lang_COUNT,
-};
-
-typedef Token_List Lex_Async_Func_Type(Async_Context*, Arena*, String_Const_u8, i32, b32*);
-typedef Token_List Lex_Sync_Func_Type (Arena*, String_Const_u8);
-typedef void Parse_Func_Type(Application_Links*, Code_Index_File*, Arena*, String_Const_u8, Token_Array*);
-typedef FColor Token_Color_Func(Token*);
-
 function Token_List lang_lex_async_nop(Async_Context *actx, Arena *arena, String_Const_u8 contents, i32 limit, b32 *canceled){ return {}; }
 function Token_List lang_lex_sync_nop (Arena *arena, String_Const_u8 contents){ return {}; }
 function void       lang_parse_nop(Application_Links *app, Code_Index_File *index, Arena *arena, String_Const_u8 contents, Token_Array *tokens){}
 function FColor     lang_paint_nop(Token* token){ return fcolor_id(defcolor_text_default); }
 // parse_async__inner
-
-struct Lang_Spec{
-  Lang_ID id;
-  Lex_Async_Func_Type *lex_async;
-  Lex_Sync_Func_Type  *lex_full;
-  Parse_Func_Type     *parse;
-  Token_Color_Func    *token_color;
-};
 
 global Lang_Spec qol_languages[Lang_COUNT];
 

@@ -246,7 +246,11 @@ function void
 qol_draw_function_tooltip_inner(Application_Links *app, Arena *arena, Code_Index_Note *note, Code_Index_Nest* paren_define, Code_Index_Nest* paren_caller, i64 pos, i64 depth){
   i64 param_hovered = 0;
   i64 pos_start = paren_caller->open.min;
-  for (Code_Index_Nest *n = paren_caller->nest_list.first; n != 0; n = n->next){
+
+  Code_Index_Nest_List caller_list = paren_caller->nest_list;
+  if (0 < caller_list.count && caller_list.last->close.max <= pos){
+    param_hovered = caller_list.count;
+  } else for (Code_Index_Nest *n = caller_list.first; n != 0; n = n->next){
     if (n->next == 0 || range_contains(Ii64(pos_start, n->close.min), pos)){ break; }
     pos_start = n->close.start;
     param_hovered++;
@@ -532,17 +536,17 @@ qol_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buff
 
   vim_draw_after_text(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness);
 
-  if (rect_contains_point(rect, qol_cur_cursor_pos) &&
-      def_get_config_b32(vars_save_string_lit("use_function_tooltip"))){
-    qol_draw_function_tooltip(app, buffer, cursor_pos);
-  }
-
   if (token_array.tokens){
     Scratch_Block scratch(app);
     ARGB_Color cl_nest = fcolor_resolve(fcolor_change_alpha(fcolor_id(defcolor_control), 0.8f));
     Text_Layout_ID minimap_id = MM_begin(app, scratch, view_id, face_id, buffer, token_array, rect, visible_range, cl_nest);
     qol_paint_token_colors(app, buffer, minimap_id);
     MM_end(app, minimap_id);
+  }
+
+  if (rect_contains_point(rect, qol_cur_cursor_pos) &&
+      def_get_config_b32(vars_save_string_lit("use_function_tooltip"))){
+    qol_draw_function_tooltip(app, buffer, cursor_pos);
   }
 
   draw_set_clip(app, prev_clip);
@@ -638,8 +642,8 @@ qol_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id
   // NOTE(allen): draw line numbers
   if (show_line_number_margins){
     (def_get_config_b32(vars_save_string_lit("vim_line_numbers_relative")) ?
-     vim_draw_rel_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect) :
-     vim_draw_abs_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect));
+      vim_draw_rel_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect) :
+      vim_draw_abs_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect));
   }
 
   // NOTE(allen): draw the buffer

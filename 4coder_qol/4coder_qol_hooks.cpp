@@ -208,7 +208,7 @@ BUFFER_HOOK_SIG(qol_begin_buffer){
   }
 
   b32 wrap_lines = (buffer_has_name_with_star(app, buffer_id) ?
-                    def_get_config_b32(vars_save_string_lit("enable_output_wrapping"));
+                    def_get_config_b32(vars_save_string_lit("enable_output_wrapping")) :
                     def_get_config_b32(vars_save_string_lit("enable_code_wrapping")));
   *scope_attachment(app, scope, buffer_wrap_lines, b32) = wrap_lines;
 

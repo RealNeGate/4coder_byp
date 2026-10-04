@@ -13,6 +13,7 @@ global Code_Index global_code_index = {};
 // Looks like the only one I ever actually use is the file one, not the array one.
 function Code_Index_Nest*
 code_index_get_nest_(Code_Index_Nest* parent, Code_Index_Nest_Ptr_Array *array, i64 pos){
+  // binary search?
   for (i32 i = 0; i < array->count; i += 1){
     Code_Index_Nest *nest = array->ptrs[i];
     if (nest->open.min <= pos && pos <= nest->close.min){
@@ -26,6 +27,20 @@ code_index_get_nest_(Code_Index_Nest* parent, Code_Index_Nest_Ptr_Array *array, 
 function Code_Index_Nest*
 code_index_get_nest(Code_Index_File *file, i64 pos){
   return(file==NULL ? NULL : code_index_get_nest_(NULL, &file->nest_array, pos));
+}
+
+function Code_Index_Nest*
+code_index_nest_walk(Code_Index_Nest *nest, i64 pos){
+  Code_Index_File *file = nest->file;
+  for(;;){
+    if (nest == NULL){
+      return code_index_get_nest(file, pos);
+    }
+    if (nest->open.min <= pos && pos < nest->close.max){
+      return code_index_get_nest_(nest, &nest->nest_array, pos);
+    }
+    nest = nest->parent;
+  }
 }
 
 function Code_Index_Note_List*
@@ -1084,9 +1099,29 @@ function f32 layout_indent(Code_Index_Nest *n, i64 pos, f32 indent){
 
 // TODO: maybe somth. else idk...
 global b32 g_anchor_pproc = true;
+global i64 g_x_shift_id = 1;
 
 function f32
 layout_index_x_shift(Application_Links *app, Layout_Reflex *reflex, Code_Index_Nest *nest, i64 pos, f32 regular_indent, b32 *unresolved_dependence){
+  if (nest == NULL){ return 0.f; }
+  if (nest->parent_x_id == g_x_shift_id){
+    //return nest->parent_x + layout_indent(nest, pos, regular_indent);
+    Code_Index_Nest *n = (nest->kind == CodeIndexNest_Scope && nest->parent && nest->parent->kind == CodeIndexNest_Stmnt) ? nest->parent->parent : nest->parent;
+    return nest->parent_x + (n && n->kind == CodeIndexNest_Paren && nest->kind == CodeIndexNest_Stmnt ? 0.f : layout_indent(nest, pos, regular_indent));
+  }
+
+  if (nest->kind == CodeIndexNest_PProc && g_anchor_pproc){ return layout_indent(nest, pos, regular_indent); }
+  if (nest->kind == CodeIndexNest_Paren && pos != nest->open.min){ return layout_reflex_get_rect(app, reflex, nest->open.max-1, unresolved_dependence).x1; }
+  // TODO: it should be possible to memoize paren nest
+
+  Code_Index_Nest *n = (nest->kind == CodeIndexNest_Scope && nest->parent && nest->parent->kind == CodeIndexNest_Stmnt) ? nest->parent->parent : nest->parent;
+  //nest->parent_x_id = g_x_shift_id;
+  nest->parent_x = layout_index_x_shift(app, reflex, n, pos, regular_indent, unresolved_dependence);
+  return nest->parent_x + (n && n->kind == CodeIndexNest_Paren && nest->kind == CodeIndexNest_Stmnt ? 0.f : layout_indent(nest, pos, regular_indent));
+}
+
+function f32
+layout_index_x_shift_(Application_Links *app, Layout_Reflex *reflex, Code_Index_Nest *nest, i64 pos, f32 regular_indent, b32 *unresolved_dependence){
   f32 shift = 0.f;
   while (nest){
     if (nest->kind == CodeIndexNest_PProc && g_anchor_pproc){ return shift + layout_indent(nest, pos, regular_indent); }
@@ -1102,7 +1137,10 @@ layout_index_x_shift(Application_Links *app, Layout_Reflex *reflex, Code_Index_N
 function f32
 layout_index_x_shift(Application_Links *app, Layout_Reflex *reflex, Code_Index_Nest *nest, i64 pos, f32 regular_indent){
   b32 ignore;
-  return(layout_index_x_shift(app, reflex, nest, pos, regular_indent, &ignore));
+  f32 a = layout_index_x_shift_(app, reflex, nest, pos, regular_indent, &ignore);
+  //f32 b = layout_index_x_shift (app, reflex, nest, pos, regular_indent, &ignore);
+  //Assert(a == b);
+  return(a);
 }
 
 function f32
@@ -1119,6 +1157,30 @@ function f32
 layout_index_x_shift(Application_Links *app, Layout_Reflex *reflex, Code_Index_File *file, i64 pos, f32 regular_indent){
   b32 ignore;
   return(layout_index_x_shift(app, reflex, file, pos, regular_indent, &ignore));
+}
+
+global Code_Index_Nest *g_nest_walk = NULL;
+
+function Code_Index_Nest*
+layout_index_x_shift_walk_(Code_Index_File *file, i64 pos){
+  //return code_index_get_nest(file, pos);
+  if (g_nest_walk == NULL || g_nest_walk->file != file){
+    return g_nest_walk = code_index_get_nest(file, pos);
+  }
+  return g_nest_walk = code_index_nest_walk(g_nest_walk, pos);
+}
+
+function f32
+layout_index_x_shift_walk(Application_Links *app, Layout_Reflex *reflex, Code_Index_File *file, i64 pos, f32 regular_indent, b32 *unresolved_dependence){
+  Code_Index_Nest *nest = layout_index_x_shift_walk_(file, pos);
+  if (nest == NULL){ return 0; }
+  return layout_index_x_shift(app, reflex, nest, pos, regular_indent, unresolved_dependence);
+}
+
+function f32
+layout_index_x_shift_walk(Application_Links *app, Layout_Reflex *reflex, Code_Index_File *file, i64 pos, f32 regular_indent){
+  b32 ignore;
+  return layout_index_x_shift_walk(app, reflex, file, pos, regular_indent, &ignore);
 }
 
 function void
@@ -1152,6 +1214,7 @@ layout_token_score_wrap_token(Token_Pair *pair, Token_Cpp_Kind kind){
 
 function Layout_Item_List
 layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Range_i64 range, Face_ID face, f32 width, Code_Index_File *file, Layout_Wrap_Kind kind){
+  g_x_shift_id += 1;
   Scratch_Block scratch(app, arena);
 
   Token_Array tokens = get_token_array_from_buffer(app, buffer);
@@ -1192,14 +1255,14 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
     start:
     if (ptr == end_ptr){
       i64 index = layout_index_from_ptr(ptr, text.str, range.first);
-      f32 shift = layout_index_x_shift(app, &reflex, file, index, regular_indent);
+      f32 shift = layout_index_x_shift_walk(app, &reflex, file, index, regular_indent);
       lr_tb_advance_x_without_item(&pos_vars, shift);
       goto finish;
     }
 
     if (!character_is_whitespace(*ptr)){
       i64 index = layout_index_from_ptr(ptr, text.str, range.first);
-      f32 shift = layout_index_x_shift(app, &reflex, file, index, regular_indent);
+      f32 shift = layout_index_x_shift_walk(app, &reflex, file, index, regular_indent);
       lr_tb_advance_x_without_item(&pos_vars, shift);
       goto consuming_non_whitespace;
     }
@@ -1210,7 +1273,7 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
           pending_wrap_ptr = ptr;
           word_ptr = ptr;
           i64 index = layout_index_from_ptr(ptr, text.str, range.first);
-          f32 shift = layout_index_x_shift(app, &reflex, file, index, regular_indent);
+          f32 shift = layout_index_x_shift_walk(app, &reflex, file, index, regular_indent);
           lr_tb_advance_x_without_item(&pos_vars, shift);
           goto consuming_non_whitespace;
         }
@@ -1221,7 +1284,7 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
         else if (*ptr == '\n'){
           pending_wrap_ptr = ptr;
           i64 index = layout_index_from_ptr(ptr, text.str, range.first);
-          f32 shift = layout_index_x_shift(app, &reflex, file, index, regular_indent);
+          f32 shift = layout_index_x_shift_walk(app, &reflex, file, index, regular_indent);
           lr_tb_advance_x_without_item(&pos_vars, shift);
           goto consuming_normal_whitespace;
         }
@@ -1230,7 +1293,7 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
       if (ptr == end_ptr){
         pending_wrap_ptr = ptr;
         i64 index = layout_index_from_ptr(ptr - 1, text.str, range.first);
-        f32 shift = layout_index_x_shift(app, &reflex, file, index, regular_indent);
+        f32 shift = layout_index_x_shift_walk(app, &reflex, file, index, regular_indent);
         lr_tb_advance_x_without_item(&pos_vars, shift);
         goto finish;
       }
@@ -1271,7 +1334,7 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
 
         lr_tb_next_line(&pos_vars);
 #if 0
-        f32 shift = layout_index_x_shift(app, &reflex, file, index, regular_indent);
+        f32 shift = layout_index_x_shift_walk(app, &reflex, file, index, regular_indent);
         lr_tb_advance_x_without_item(&pos_vars, shift);
 #endif
 
@@ -1288,7 +1351,8 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
         u8 *new_wrap_ptr = ptr;
 
         i64 index = layout_index_from_ptr(new_wrap_ptr, text.str, range.first);
-        Code_Index_Nest *new_wrap_nest = code_index_get_nest(file, index);
+        Code_Index_Nest *new_wrap_nest = layout_index_x_shift_walk_(file, index);
+        //Code_Index_Nest *new_wrap_nest = code_index_get_nest(file, index);
         b32 invalid_wrap_x = false;
         f32 new_wrap_x = layout_index_x_shift(app, &reflex, new_wrap_nest, index, regular_indent, &invalid_wrap_x);
         if (invalid_wrap_x){
@@ -1405,6 +1469,7 @@ layout_index__inner(Application_Links *app, Arena *arena, Buffer_ID buffer, Rang
 
   layout_item_list_finish(&list, -pos_vars.line_to_text_shift);
 
+  g_nest_walk = NULL;  // ensure this is never stale for nest caller
   return(list);
 }
 

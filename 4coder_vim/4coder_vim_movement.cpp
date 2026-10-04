@@ -401,6 +401,7 @@ function i64 vim_bounce_pair(Application_Links *app, Buffer_ID buffer, i64 pos, 
   return pos;
 }
 
+// TODO:
 function i64
 vim_bounce_nest(Application_Links *app, Buffer_ID buffer, i64 pos, Scan_Direction dir){
   code_index_lock();
@@ -414,6 +415,10 @@ vim_bounce_nest(Application_Links *app, Buffer_ID buffer, i64 pos, Scan_Directio
   fnest.nest_array = file->nest_array;
 
   Code_Index_Nest* parent = code_index_get_nest(file, pos);
+  while(parent && parent->kind != CodeIndexNest_Scope || parent->kind != CodeIndexNest_Paren){
+    parent = parent->parent;
+  }
+
   if (parent == NULL){ parent = &fnest; }
   if (range_contains(parent->open, pos)){ return parent->close.min; }
   if (range_contains(parent->close, pos)){ return parent->open.min; }
@@ -442,8 +447,9 @@ vim_bounce_nest(Application_Links *app, Buffer_ID buffer, i64 pos, Scan_Directio
 }
 
 function i64 vim_scan_bounce(Application_Links *app, Buffer_ID buffer, i64 cursor_pos, Scan_Direction direction){
-  i64 p = vim_bounce_nest(app, buffer, cursor_pos, direction);
-  if (p != -1){ return p; }
+  // TODO:
+  //i64 p = vim_bounce_nest(app, buffer, cursor_pos, direction);
+  //if (p != -1){ return p; }
 
   i64 max_pos = buffer_get_size(app, buffer);
   u8 c = buffer_get_char(app, buffer, cursor_pos);

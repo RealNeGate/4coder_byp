@@ -12,7 +12,7 @@ Ii64(Token *token){
 internal void
 token_list_push(Arena *arena, Token_List *list, Token *token){
   Token_Block *block = list->last;
-  if (block == 0 || block->count + 1 > block->max){
+  if (block == 0 || block->max < block->count + 1){
     block = push_array(arena, Token_Block, 1);
     block->next = 0;
     block->prev = 0;
@@ -23,7 +23,7 @@ token_list_push(Arena *arena, Token_List *list, Token *token){
     zdll_push_back(list->first, list->last, block);
     list->node_count += 1;
   }
-  block_copy_struct(&block->tokens[block->count], token);
+  block->tokens[block->count] = *token;
   block->count += 1;
   list->total_count += 1;
 }

@@ -36,6 +36,9 @@ struct Code_Index_Nest{
   Range_i64 open;
   Range_i64 close;
 
+  i64 parent_x_id;
+  f32 parent_x;
+
   struct Code_Index_File *file;
   Code_Index_Nest *parent;
 

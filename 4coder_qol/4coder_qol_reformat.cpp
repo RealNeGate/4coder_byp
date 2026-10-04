@@ -1,4 +1,8 @@
-function void qol_reformat_buffer(Application_Links *app, Buffer_ID buffer){
+
+global b32 g_reformat_locked = false;
+
+function b32 qol_reformat_buffer(Application_Links *app, Buffer_ID buffer){
+  if (g_reformat_locked){ return false; }
   Scratch_Block scratch(app);
   Face_ID face = get_face_id(app, buffer);
   Face_Metrics metrics = get_face_metrics(app, face);
@@ -10,7 +14,7 @@ function void qol_reformat_buffer(Application_Links *app, Buffer_ID buffer){
   code_index_lock();
   defer{ code_index_unlock(); };
   Code_Index_File *file = code_index_get_file(buffer);
-  if (file == 0){ return; }
+  if (file == 0){ return false; }
 
   String_ID key = vars_save_string_lit("virtual_whitespace_regular_indent");
   u64 prev_indent = def_get_config_u64(app, key);
@@ -18,6 +22,7 @@ function void qol_reformat_buffer(Application_Links *app, Buffer_ID buffer){
   Layout_Item_List list = layout_index__inner(app, scratch, buffer, buffer_range(app, buffer), face, max_f32, file, Layout_Unwrapped);
   def_set_config_u64(app, key, prev_indent);
   Layout_Reflex reflex = get_layout_reflex(&list, buffer, max_f32, face);
+  g_x_shift_id += 1;
 
   String_Const_u8 chars = string_u8_empty;
   Character_Predicate cc = character_predicate_non_whitespace | character_predicate_from_character('\n');
@@ -40,7 +45,7 @@ function void qol_reformat_buffer(Application_Links *app, Buffer_ID buffer){
       continue;
     }
 
-    i64 shift = i64(layout_index_x_shift(app, &reflex, file, line.first_char_pos, tab_width) / metrics.space_advance);
+    i64 shift = i64(layout_index_x_shift_walk(app, &reflex, file, line.first_char_pos, tab_width) / metrics.space_advance);
     if (shift < 0){ continue; }  // sanity
     String_Const_u8 ws = string_u8_empty;
     if (shift != 0){
@@ -89,10 +94,13 @@ function void qol_reformat_buffer(Application_Links *app, Buffer_ID buffer){
       batch->edit.range = Ii64(p0, p1);
     }
   }
+
   if (batch_first != 0){
     buffer_batch_edit(app, buffer, batch_first);
-    buffer_clear_layout_cache(app, buffer);
   }
+
+  g_nest_walk = NULL;
+  return batch_first != NULL;
 }
 
 CUSTOM_COMMAND_SIG(qol_reformat_current)
@@ -105,8 +113,18 @@ CUSTOM_DOC("[QOL] reformat buffer via code index")
 CUSTOM_COMMAND_SIG(qol_format_all_buffers)
 CUSTOM_DOC("[QOL] Auto-indent and remove blank lines for all loaded buffers")
 {
+  b32 did_reformat = false;
+  print_message(app, string_u8_litexpr("Reformatting: "));
   for (Buffer_ID b=0; b=get_buffer_next(app, b, Access_ReadWrite);){
-    qol_reformat_buffer(app, b);
+    if (qol_reformat_buffer(app, b)){
+      if (!did_reformat){ printf_message(app, "{\n"); }
+      did_reformat = true;
+      Scratch_Block scratch(app);
+      printf_message(app, "  %S\n", push_buffer_unique_name(app, scratch, b));
+    }
   }
+  if (did_reformat){ printf_message(app, "}\n"); }
+  g_reformat_locked = true;  // prevent save-hook from re-re-formatting
   save_all_dirty_buffers(app);
+  g_reformat_locked = false;
 }

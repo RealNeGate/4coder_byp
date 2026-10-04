@@ -163,20 +163,10 @@ BUFFER_HOOK_SIG(qol_file_save){
     }
   }
 
-  if (string_match(name, string_u8_litexpr("config.4coder"))){
-    View_ID view = get_active_view(app, Access_Always);
-    view_enqueue_command_function(app, view, qol_reload_config);
-  }
-
-  if (string_match(name, string_u8_litexpr("project.4coder"))){
-    View_ID view = get_active_view(app, Access_Always);
-    view_enqueue_command_function(app, view, qol_reload_project);
-  }
-
-  if (string_match(name, string_u8_litexpr("bindings.4coder"))){
-    View_ID view = get_active_view(app, Access_Always);
-    view_enqueue_command_function(app, view, qol_reload_bindings);
-  }
+  View_ID view = get_active_view(app, Access_Always);
+  if (string_match(name, string_u8_litexpr(  "config.4coder"))){ view_enqueue_command_function(app, view, qol_reload_config); }
+  if (string_match(name, string_u8_litexpr( "project.4coder"))){ view_enqueue_command_function(app, view, qol_reload_project); }
+  if (string_match(name, string_u8_litexpr("bindings.4coder"))){ view_enqueue_command_function(app, view, qol_reload_bindings); }
 
   return 0;
 }

@@ -1115,29 +1115,29 @@ layout_index_x_shift(Application_Links *app, Layout_Reflex *reflex, Code_Index_N
   // TODO: it should be possible to memoize paren nest
 
   Code_Index_Nest *n = (nest->kind == CodeIndexNest_Scope && nest->parent && nest->parent->kind == CodeIndexNest_Stmnt) ? nest->parent->parent : nest->parent;
-  //nest->parent_x_id = g_x_shift_id;
+  nest->parent_x_id = g_x_shift_id;
   nest->parent_x = layout_index_x_shift(app, reflex, n, pos, regular_indent, unresolved_dependence);
   return nest->parent_x + (n && n->kind == CodeIndexNest_Paren && nest->kind == CodeIndexNest_Stmnt ? 0.f : layout_indent(nest, pos, regular_indent));
 }
 
-function f32
-layout_index_x_shift_(Application_Links *app, Layout_Reflex *reflex, Code_Index_Nest *nest, i64 pos, f32 regular_indent, b32 *unresolved_dependence){
-  f32 shift = 0.f;
-  while (nest){
-    if (nest->kind == CodeIndexNest_PProc && g_anchor_pproc){ return shift + layout_indent(nest, pos, regular_indent); }
-    if (nest->kind == CodeIndexNest_Paren && pos != nest->open.min){ return shift + layout_reflex_get_rect(app, reflex, nest->open.max-1, unresolved_dependence).x1; }
+//function f32
+//layout_index_x_shift_(Application_Links *app, Layout_Reflex *reflex, Code_Index_Nest *nest, i64 pos, f32 regular_indent, b32 *unresolved_dependence){
+//f32 shift = 0.f;
+//while (nest){
+//if (nest->kind == CodeIndexNest_PProc && g_anchor_pproc){ return shift + layout_indent(nest, pos, regular_indent); }
+//if (nest->kind == CodeIndexNest_Paren && pos != nest->open.min){ return shift + layout_reflex_get_rect(app, reflex, nest->open.max-1, unresolved_dependence).x1; }
 
-    shift = shift + layout_indent(nest, pos, regular_indent);
-    nest = (nest->kind == CodeIndexNest_Scope && nest->parent && nest->parent->kind == CodeIndexNest_Stmnt) ? nest->parent->parent : nest->parent;
-    //nest = nest->parent;
-  }
-  return shift;
-}
+//shift = shift + layout_indent(nest, pos, regular_indent);
+//nest = (nest->kind == CodeIndexNest_Scope && nest->parent && nest->parent->kind == CodeIndexNest_Stmnt) ? nest->parent->parent : nest->parent;
+////nest = nest->parent;
+//}
+//return shift;
+//}
 
 function f32
 layout_index_x_shift(Application_Links *app, Layout_Reflex *reflex, Code_Index_Nest *nest, i64 pos, f32 regular_indent){
   b32 ignore;
-  f32 a = layout_index_x_shift_(app, reflex, nest, pos, regular_indent, &ignore);
+  f32 a = layout_index_x_shift(app, reflex, nest, pos, regular_indent, &ignore);
   //f32 b = layout_index_x_shift (app, reflex, nest, pos, regular_indent, &ignore);
   //Assert(a == b);
   return(a);

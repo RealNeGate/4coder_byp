@@ -576,7 +576,7 @@ union SNode{
 #define zdll_remove(f,l,n) zdll_remove_NP_((f),(l),(n),next,prev)
 
 #define zdll_assert_good(T,f) Stmnt( if (f != 0){ Assert(f->prev == 0); \
-                                    for(T *p_ = f; p_ != 0; p_ = p_->next){ Assert(p_->prev == 0 || p_->prev->next == p_); Assert(p_->next == 0 || p_->next->prev == p_); }  } )
+                                      for(T *p_ = f; p_ != 0; p_ = p_->next){ Assert(p_->prev == 0 || p_->prev->next == p_); Assert(p_->next == 0 || p_->next->prev == p_); }  } )
 
 ////////////////////////////////
 

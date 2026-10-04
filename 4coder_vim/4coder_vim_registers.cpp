@@ -22,32 +22,32 @@ vim_update_registers(Application_Links *app){
 
   i64 total_size = top_text.size;
   foreach(i, ArrayCount(vim_registers.r)){
-  Vim_Register *reg = vim_registers.r + i;
-  if(reg->flags & REGISTER_Set){
-  u8 reg_char = vim_get_register_char(reg);
-  i64 size = Min(i64(reg->data.size), max_line_size);
-  size -= (reg->data.str[size-1] == '\n');
+    Vim_Register *reg = vim_registers.r + i;
+    if(reg->flags & REGISTER_Set){
+      u8 reg_char = vim_get_register_char(reg);
+      i64 size = Min(i64(reg->data.size), max_line_size);
+      size -= (reg->data.str[size-1] == '\n');
 
-  last = (last->next = push_array(scratch, Batch_Edit, 1));
-  u8 *str = push_array(scratch, u8, 4);
-  str[0] = '\n';
-  str[1] = reg_char;
-  str[2] = '|';
-  str[3] = ' ';
+      last = (last->next = push_array(scratch, Batch_Edit, 1));
+      u8 *str = push_array(scratch, u8, 4);
+      str[0] = '\n';
+      str[1] = reg_char;
+      str[2] = '|';
+      str[3] = ' ';
 
-  last->edit.text = SCu8(str, 4);
-  last->edit.range = Ii64_size(total_size, 4);
-  total_size += 4;
+      last->edit.text = SCu8(str, 4);
+      last->edit.range = Ii64_size(total_size, 4);
+      total_size += 4;
 
-  last = (last->next = push_array(scratch, Batch_Edit, 1));
-  last->edit.text = string_substring(reg->data.string, Ii64(0, size));
-  last->edit.range = Ii64_size(total_size, size);
-  total_size += size;
-  if(reg->flags & REGISTER_Updated){
-  reg->flags &= (~REGISTER_Updated);
-  buffer_post_fade(app, buffer, 0.667f, last->edit.range, fcolor_resolve(fcolor_id(defcolor_cursor)));
-  }
-  }
+      last = (last->next = push_array(scratch, Batch_Edit, 1));
+      last->edit.text = string_substring(reg->data.string, Ii64(0, size));
+      last->edit.range = Ii64_size(total_size, size);
+      total_size += size;
+      if(reg->flags & REGISTER_Updated){
+        reg->flags &= (~REGISTER_Updated);
+        buffer_post_fade(app, buffer, 0.667f, last->edit.range, fcolor_resolve(fcolor_id(defcolor_cursor)));
+      }
+    }
   }
   last->next = 0;
   String_Const_u8 blank_string = SCu8(push_array(scratch, u8, total_size+1), total_size+1);

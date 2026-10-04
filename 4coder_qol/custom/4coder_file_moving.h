@@ -1,124 +1,124 @@
 /*
 * Mr. 4th Dimention - Allen Webster
-    *
-    * 21.01.2017
-    *
-    * Moving files around on the file system.
-    *
-    */
+*
+* 21.01.2017
+*
+* Moving files around on the file system.
+*
+*/
 
-    // TOP
+// TOP
 
-    #if !defined(FRED_FILE_MOVING_H)
-    #define FRED_FILE_MOVING_H
+#if !defined(FRED_FILE_MOVING_H)
+#define FRED_FILE_MOVING_H
 
-    #include <stdio.h>  // include system for windows
-    #include <stdlib.h> // include system for linux   (YAY!)
-    #include <stdarg.h>
-    #include <string.h>
+#include <stdio.h>  // include system for windows
+#include <stdlib.h> // include system for linux   (YAY!)
+#include <stdarg.h>
+#include <string.h>
 
-    // System commands
-    static char SF_CMD[4096];
-    static i32 error_state = 0;
-    static i32 prev_error = 0;
+// System commands
+static char SF_CMD[4096];
+static i32 error_state = 0;
+static i32 prev_error = 0;
 
-    #if defined(FM_PRINT_COMMANDS)
-    #define SYSTEMF_PRINTF(...) printf(__VA_ARGS__);
-    #else
-    #define SYSTEMF_PRINTF(...)
-    #endif
+#if defined(FM_PRINT_COMMANDS)
+#define SYSTEMF_PRINTF(...) printf(__VA_ARGS__);
+#else
+#define SYSTEMF_PRINTF(...)
+#endif
 
-    #define systemf(...) do{                                       \
+#define systemf(...) do{                                       \
     i32 n = snprintf(SF_CMD, sizeof(SF_CMD), __VA_ARGS__);     \
     Assert(n < sizeof(SF_CMD));                                \
     SYSTEMF_PRINTF("%s\n", SF_CMD);                            \
     prev_error = system(SF_CMD);                               \
     if (prev_error != 0) error_state = 1;                      \
-    }while(0)
+  }while(0)
 
-    internal void fm_execute_in_dir(char *dir, char *str, char *args);
+internal void fm_execute_in_dir(char *dir, char *str, char *args);
 
-    // Init
-    enum{
-    DetailLevel_Basics = 0,
-    DetailLevel_FileOperations = 1,
-    DetailLevel_Everything = 2,
-    };
-    global i32 detail_level = 0;
+// Init
+enum{
+  DetailLevel_Basics = 0,
+  DetailLevel_FileOperations = 1,
+  DetailLevel_Everything = 2,
+};
+global i32 detail_level = 0;
 
-    internal Arena fm_init_system(i32 detail_level);
+internal Arena fm_init_system(i32 detail_level);
 
-    // Timing
-    internal u64 fm_get_time();
+// Timing
+internal u64 fm_get_time();
 
-    // Files and Folders Manipulation
-    internal void fm_make_folder_if_missing(Arena *arena, char *dir);
-    internal void fm_clear_folder(char *folder);
-    internal void fm_delete_file(char *file);
-    internal void fm_copy_file(char *file, char *newname);
-    internal void fm_copy_all(char *source, char *folder);
-    internal void fm_copy_folder(Arena *arena, char *src_dir, char *dst_dir, char *src_folder);
+// Files and Folders Manipulation
+internal void fm_make_folder_if_missing(Arena *arena, char *dir);
+internal void fm_clear_folder(char *folder);
+internal void fm_delete_file(char *file);
+internal void fm_copy_file(char *file, char *newname);
+internal void fm_copy_all(char *source, char *folder);
+internal void fm_copy_folder(Arena *arena, char *src_dir, char *dst_dir, char *src_folder);
 
-    // File Reading and Writing
-    internal void fm_write_file(char *file_name, char *data, u32 size);
+// File Reading and Writing
+internal void fm_write_file(char *file_name, char *data, u32 size);
 
-    // Zip
-    internal void fm_zip(char *parent, char *folder, char *dest);
+// Zip
+internal void fm_zip(char *parent, char *folder, char *dest);
 
-    // Slash Correction
-    internal void fm_slash_fix(char *path);
+// Slash Correction
+internal void fm_slash_fix(char *path);
 
-    // Memory concat helpers
-    internal char *fm_prepare_string_internal(Arena *arena, char *s1, ...);
-    #define fm_str(...) fm_prepare_string_internal(__VA_ARGS__, (void*)0)
+// Memory concat helpers
+internal char *fm_prepare_string_internal(Arena *arena, char *s1, ...);
+#define fm_str(...) fm_prepare_string_internal(__VA_ARGS__, (void*)0)
 
-    internal char *fm_basic_string_internal(Arena *arena, char *s1, ...);
-    #define fm_basic_str(...) fm_basic_string_internal(__VA_ARGS__, (void*)0)
+internal char *fm_basic_string_internal(Arena *arena, char *s1, ...);
+#define fm_basic_str(...) fm_basic_string_internal(__VA_ARGS__, (void*)0)
 
-    internal char **fm_prepare_list_internal(Arena *arena, char **l1, ...);
-    #define fm_list(...) fm_prepare_list_internal(__VA_ARGS__, (void*)0)
+internal char **fm_prepare_list_internal(Arena *arena, char **l1, ...);
+#define fm_list(...) fm_prepare_list_internal(__VA_ARGS__, (void*)0)
 
-    internal char **fm_list_one_item(Arena *arena, char *item);
+internal char **fm_list_one_item(Arena *arena, char *item);
 
-    // File System Navigation
-    internal i32  fm_get_current_directory(char *buffer, i32 max);
+// File System Navigation
+internal i32  fm_get_current_directory(char *buffer, i32 max);
 
-    struct Temp_Dir{
-    char dir[512];
-    };
+struct Temp_Dir{
+  char dir[512];
+};
 
-    internal Temp_Dir fm_pushdir(char *dir);
-    internal void fm_popdir(Temp_Dir temp);
+internal Temp_Dir fm_pushdir(char *dir);
+internal void fm_popdir(Temp_Dir temp);
 
-    // Build Line
-    #define BUILD_LINE_MAX 4096
-    struct Build_Line{
-    char build_optionsA[BUILD_LINE_MAX];
-    char build_optionsB[BUILD_LINE_MAX];
-    char *build_options;
-    char *build_options_prev;
-    i32 build_max;
-    };
+// Build Line
+#define BUILD_LINE_MAX 4096
+struct Build_Line{
+  char build_optionsA[BUILD_LINE_MAX];
+  char build_optionsB[BUILD_LINE_MAX];
+  char *build_options;
+  char *build_options_prev;
+  i32 build_max;
+};
 
-    internal void fm_init_build_line(Build_Line *line);
-    internal void fm_finish_build_line(Build_Line *line);
+internal void fm_init_build_line(Build_Line *line);
+internal void fm_finish_build_line(Build_Line *line);
 
-    internal void fm__swap_ptr(char **A, char **B);
+internal void fm__swap_ptr(char **A, char **B);
 
-    #if COMPILER_CL
+#if COMPILER_CL
 
-    #define fm_add_to_line(line, str, ...) do{  \
+#define fm_add_to_line(line, str, ...) do{  \
     snprintf(line.build_options,            \
-    line.build_max, "%s "str,               \
-    line.build_options_prev, __VA_ARGS__);  \
+             line.build_max, "%s "str,               \
+             line.build_options_prev, __VA_ARGS__);  \
     fm__swap_ptr(&line.build_options, &line.build_options_prev); \
-    }while(0)
+  }while(0)
 
-    #elif COMPILER_GCC | COMPILER_CLANG
+#elif COMPILER_GCC | COMPILER_CLANG
 
-    #define fm_add_to_line(line, str, ...) do{                   \
+#define fm_add_to_line(line, str, ...) do{                   \
     snprintf(line.build_options, line.build_max, "%s " str,  \
-    line.build_options_prev, ##__VA_ARGS__);                 \
+             line.build_options_prev, ##__VA_ARGS__);                 \
     fm__swap_ptr(&line.build_options, &line.build_options_prev); \
   }while(0)
 

@@ -1,1609 +1,1609 @@
 /*
 * 4coder base types
-    */
+*/
 
-    // TOP
+// TOP
 
-    #if !defined(FCODER_BASE_TYPES_CPP)
-    #define FCODER_BASE_TYPES_CPP
+#if !defined(FCODER_BASE_TYPES_CPP)
+#define FCODER_BASE_TYPES_CPP
 
-    #define C_MATH 1
+#define C_MATH 1
 
-    function i32
-    i32_ceil32(f32 v){
-    return(((v)>0)?( (v == (i32)(v))?((i32)(v)):((i32)((v)+1.f)) ):( ((i32)(v)) ));
-    }
+function i32
+i32_ceil32(f32 v){
+  return(((v)>0)?( (v == (i32)(v))?((i32)(v)):((i32)((v)+1.f)) ):( ((i32)(v)) ));
+}
 
-    function i32
-    i32_floor32(f32 v){
-    return(((v)<0)?( (v == (i32)(v))?((i32)(v)):((i32)((v)-1.f)) ):( ((i32)(v)) ));
-    }
+function i32
+i32_floor32(f32 v){
+  return(((v)<0)?( (v == (i32)(v))?((i32)(v)):((i32)((v)-1.f)) ):( ((i32)(v)) ));
+}
 
-    function i32
-    i32_round32(f32 v){
-    return(i32_floor32(v + 0.5f));
-    }
+function i32
+i32_round32(f32 v){
+  return(i32_floor32(v + 0.5f));
+}
 
-    function f32
-    f32_ceil32(f32 v){
-    return((f32)i32_ceil32(v));
-    }
+function f32
+f32_ceil32(f32 v){
+  return((f32)i32_ceil32(v));
+}
 
-    function f32
-    f32_floor32(f32 v){
-    return((f32)i32_floor32(v));
-    }
+function f32
+f32_floor32(f32 v){
+  return((f32)i32_floor32(v));
+}
 
-    function f32
-    f32_round32(f32 v){
-    return((f32)i32_round32(v));
-    }
+function f32
+f32_round32(f32 v){
+  return((f32)i32_round32(v));
+}
 
-    function i8
-    round_up_i8(i8 x, i8 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function u8
-    round_up_u8(u8 x, u8 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function i16
-    round_up_i16(i16 x, i16 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function u16
-    round_up_u16(u16 x, u16 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function i32
-    round_up_i32(i32 x, i32 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function u32
-    round_up_u32(u32 x, u32 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function i64
-    round_up_i64(i64 x, i64 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
-    function u64
-    round_up_u64(u64 x, u64 b){
-    x += b - 1;
-    x -= x%b;
-    return(x);
-    }
+function i8
+round_up_i8(i8 x, i8 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function u8
+round_up_u8(u8 x, u8 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function i16
+round_up_i16(i16 x, i16 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function u16
+round_up_u16(u16 x, u16 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function i32
+round_up_i32(i32 x, i32 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function u32
+round_up_u32(u32 x, u32 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function i64
+round_up_i64(i64 x, i64 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
+function u64
+round_up_u64(u64 x, u64 b){
+  x += b - 1;
+  x -= x%b;
+  return(x);
+}
 
-    function i8
-    round_down_i8(i8 x, i8 b){
-    x -= x%b;
-    return(x);
-    }
-    function u8
-    round_down_u8(u8 x, u8 b){
-    x -= x%b;
-    return(x);
-    }
-    function i16
-    round_down_i16(i16 x, i16 b){
-    x -= x%b;
-    return(x);
-    }
-    function u16
-    round_down_u16(u16 x, u16 b){
-    x -= x%b;
-    return(x);
-    }
-    function i32
-    round_down_i32(i32 x, i32 b){
-    x -= x%b;
-    return(x);
-    }
-    function u32
-    round_down_u32(u32 x, u32 b){
-    x -= x%b;
-    return(x);
-    }
-    function i64
-    round_down_i64(i64 x, i64 b){
-    x -= x%b;
-    return(x);
-    }
-    function u64
-    round_down_u64(u64 x, u64 b){
-    x -= x%b;
-    return(x);
-    }
+function i8
+round_down_i8(i8 x, i8 b){
+  x -= x%b;
+  return(x);
+}
+function u8
+round_down_u8(u8 x, u8 b){
+  x -= x%b;
+  return(x);
+}
+function i16
+round_down_i16(i16 x, i16 b){
+  x -= x%b;
+  return(x);
+}
+function u16
+round_down_u16(u16 x, u16 b){
+  x -= x%b;
+  return(x);
+}
+function i32
+round_down_i32(i32 x, i32 b){
+  x -= x%b;
+  return(x);
+}
+function u32
+round_down_u32(u32 x, u32 b){
+  x -= x%b;
+  return(x);
+}
+function i64
+round_down_i64(i64 x, i64 b){
+  x -= x%b;
+  return(x);
+}
+function u64
+round_down_u64(u64 x, u64 b){
+  x -= x%b;
+  return(x);
+}
 
-    function f32
-    f32_integer(f32 x){
-    return((f32)((i32)x));
-    }
+function f32
+f32_integer(f32 x){
+  return((f32)((i32)x));
+}
 
-    function u32
-    round_up_pot_u32(u32 x){
-    --x;
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    ++x;
-    return(x);
-    }
+function u32
+round_up_pot_u32(u32 x){
+  --x;
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  ++x;
+  return(x);
+}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function String_Const_u8
-    make_data(void *memory, u64 size){
-    String_Const_u8 data = {(u8*)memory, size};
-    return(data);
-    }
+function String_Const_u8
+make_data(void *memory, u64 size){
+  String_Const_u8 data = {(u8*)memory, size};
+  return(data);
+}
 
-    #define make_data_struct(s) make_data((s), sizeof(*(s)))
+#define make_data_struct(s) make_data((s), sizeof(*(s)))
 
-    global_const String_Const_u8 zero_data = {};
+global_const String_Const_u8 zero_data = {};
 
-    #define data_initr(m,s) {(u8*)(m), (s)}
-    #define data_initr_struct(s) {(u8*)(s), sizeof(*(s))}
-    #define data_initr_array(a) {(u8*)(a), sizeof(a)}
-    #define data_initr_string(s) {(u8*)(s), sizeof(s) - 1}
+#define data_initr(m,s) {(u8*)(m), (s)}
+#define data_initr_struct(s) {(u8*)(s), sizeof(*(s))}
+#define data_initr_array(a) {(u8*)(a), sizeof(a)}
+#define data_initr_string(s) {(u8*)(s), sizeof(s) - 1}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function void
-    block_zero(void *mem, u64 size){
-    for (u8 *p = (u8*)mem, *e = p + size; p < e; p += 1){
+function void
+block_zero(void *mem, u64 size){
+  for (u8 *p = (u8*)mem, *e = p + size; p < e; p += 1){
     *p = 0;
-    }
-    }
-    function void
-    block_zero(String_Const_u8 data){
-    block_zero(data.str, data.size);
-    }
-    function void
-    block_fill_ones(void *mem, u64 size){
-    for (u8 *p = (u8*)mem, *e = p + size; p < e; p += 1){
+  }
+}
+function void
+block_zero(String_Const_u8 data){
+  block_zero(data.str, data.size);
+}
+function void
+block_fill_ones(void *mem, u64 size){
+  for (u8 *p = (u8*)mem, *e = p + size; p < e; p += 1){
     *p = 0xFF;
-    }
-    }
-    function void
-    block_fill_ones(String_Const_u8 data){
-    block_fill_ones(data.str, data.size);
-    }
-    function void
-    block_copy(void *dst, const void *src, u64 size){
-    u8 *d = (u8*)dst;
-    u8 *s = (u8*)src;
-    if (d < s){
+  }
+}
+function void
+block_fill_ones(String_Const_u8 data){
+  block_fill_ones(data.str, data.size);
+}
+function void
+block_copy(void *dst, const void *src, u64 size){
+  u8 *d = (u8*)dst;
+  u8 *s = (u8*)src;
+  if (d < s){
     u8 *e = d + size;
     for (; d < e; d += 1, s += 1){
-    *d = *s;
+      *d = *s;
     }
-    }
-    else if (d > s){
+  }
+  else if (d > s){
     u8 *e = d;
     d += size - 1;
     s += size - 1;
     for (; d >= e; d -= 1, s -= 1){
-    *d = *s;
+      *d = *s;
     }
-    }
-    }
-    function b32
-    block_match(void *a, void *b, u64 size){
-    b32 result = true;
-    for (u8 *pa = (u8*)a, *pb = (u8*)b, *ea = pa + size; pa < ea; pa += 1, pb += 1){
+  }
+}
+function b32
+block_match(void *a, void *b, u64 size){
+  b32 result = true;
+  for (u8 *pa = (u8*)a, *pb = (u8*)b, *ea = pa + size; pa < ea; pa += 1, pb += 1){
     if (*pa != *pb){
-    result = false;
-    break;
+      result = false;
+      break;
     }
-    }
-    return(result);
-    }
-    function i32
-    block_compare(void *a, void *b, u64 size){
-    i32 result = 0;
-    for (u8 *pa = (u8*)a, *pb = (u8*)b, *ea = pa + size; pa < ea; pa += 1, pb += 1){
+  }
+  return(result);
+}
+function i32
+block_compare(void *a, void *b, u64 size){
+  i32 result = 0;
+  for (u8 *pa = (u8*)a, *pb = (u8*)b, *ea = pa + size; pa < ea; pa += 1, pb += 1){
     i32 dif = (i32)*pa - (i32)*pb;
     if (dif != 0){
-    result = (dif > 0)?1:-1;
-    break;
+      result = (dif > 0)?1:-1;
+      break;
     }
-    }
-    return(result);
-    }
-    function void
-    block_fill_u8(void *a, u64 size, u8 val){
-    for (u8 *ptr = (u8*)a, *e = ptr + size; ptr < e; ptr += 1){
+  }
+  return(result);
+}
+function void
+block_fill_u8(void *a, u64 size, u8 val){
+  for (u8 *ptr = (u8*)a, *e = ptr + size; ptr < e; ptr += 1){
     *ptr = val;
-    }
-    }
-    function void
-    block_fill_u16(void *a, u64 size, u16 val){
-    Assert(size%sizeof(u16) == 0);
-    u64 count = size/sizeof(u16);
-    for (u16 *ptr = (u16*)a, *e = ptr + count; ptr < e; ptr += 1){
+  }
+}
+function void
+block_fill_u16(void *a, u64 size, u16 val){
+  Assert(size%sizeof(u16) == 0);
+  u64 count = size/sizeof(u16);
+  for (u16 *ptr = (u16*)a, *e = ptr + count; ptr < e; ptr += 1){
     *ptr = val;
-    }
-    }
-    function void
-    block_fill_u32(void *a, u64 size, u32 val){
-    Assert(size%sizeof(u32) == 0);
-    u64 count = size/sizeof(u32);
-    for (u32 *ptr = (u32*)a, *e = ptr + count; ptr < e; ptr += 1){
+  }
+}
+function void
+block_fill_u32(void *a, u64 size, u32 val){
+  Assert(size%sizeof(u32) == 0);
+  u64 count = size/sizeof(u32);
+  for (u32 *ptr = (u32*)a, *e = ptr + count; ptr < e; ptr += 1){
     *ptr = val;
-    }
-    }
-    function void
-    block_fill_u64(void *a, u64 size, u64 val){
-    Assert(size%sizeof(u64) == 0);
-    u64 count = size/sizeof(u64);
-    for (u64 *ptr = (u64*)a, *e = ptr + count; ptr < e; ptr += 1){
+  }
+}
+function void
+block_fill_u64(void *a, u64 size, u64 val){
+  Assert(size%sizeof(u64) == 0);
+  u64 count = size/sizeof(u64);
+  for (u64 *ptr = (u64*)a, *e = ptr + count; ptr < e; ptr += 1){
     *ptr = val;
-    }
-    }
+  }
+}
 
-    function void
-    block_range_copy__inner(void *dst, void *src, Range_u64 range, i64 shift){
-    block_copy((u8*)dst + range.first + shift, (u8*)src + range.first, range.max - range.min);
-    }
+function void
+block_range_copy__inner(void *dst, void *src, Range_u64 range, i64 shift){
+  block_copy((u8*)dst + range.first + shift, (u8*)src + range.first, range.max - range.min);
+}
 
-    function void
-    block_range_copy__inner(void *dst, void *src, Range_u64 range, i64 shift, u64 item_size){
-    range.first *= item_size;
-    range.one_past_last *= item_size;
-    shift *= item_size;
-    block_range_copy__inner(dst, src, range, shift);
-    }
+function void
+block_range_copy__inner(void *dst, void *src, Range_u64 range, i64 shift, u64 item_size){
+  range.first *= item_size;
+  range.one_past_last *= item_size;
+  shift *= item_size;
+  block_range_copy__inner(dst, src, range, shift);
+}
 
-    function void
-    block_copy_array_shift__inner(void *dst, void *src, u64 it_size, Range_i64 range, i64 shift){
-    u8 *dptr = (u8*)dst;
-    u8 *sptr = (u8*)src;
-    dptr += it_size*(range.first + shift);
-    sptr += it_size*range.first;
-    block_copy(dptr, sptr, (u64)(it_size*(range.one_past_last - range.first)));
-    }
-    function void
-    block_copy_array_shift__inner(void *dst, void *src, u64 it_size, Range_i32 range, i64 shift){
-    u8 *dptr = (u8*)dst;
-    u8 *sptr = (u8*)src;
-    dptr += it_size*(range.first + shift);
-    sptr += it_size*range.first;
-    block_copy(dptr, sptr, (u64)(it_size*(range.one_past_last - range.first)));
-    }
+function void
+block_copy_array_shift__inner(void *dst, void *src, u64 it_size, Range_i64 range, i64 shift){
+  u8 *dptr = (u8*)dst;
+  u8 *sptr = (u8*)src;
+  dptr += it_size*(range.first + shift);
+  sptr += it_size*range.first;
+  block_copy(dptr, sptr, (u64)(it_size*(range.one_past_last - range.first)));
+}
+function void
+block_copy_array_shift__inner(void *dst, void *src, u64 it_size, Range_i32 range, i64 shift){
+  u8 *dptr = (u8*)dst;
+  u8 *sptr = (u8*)src;
+  dptr += it_size*(range.first + shift);
+  sptr += it_size*range.first;
+  block_copy(dptr, sptr, (u64)(it_size*(range.one_past_last - range.first)));
+}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function f32
-    abs_f32(f32 x){
-    if (x < 0){
+function f32
+abs_f32(f32 x){
+  if (x < 0){
     x = -x;
-    }
-    return(x);
-    }
+  }
+  return(x);
+}
 
-    #if C_MATH
-    #include <math.h>
+#if C_MATH
+#include <math.h>
 
-    function f32
-    pow_f32(f32 x, f32 y){
-    return(powf(x, y));
-    }
+function f32
+pow_f32(f32 x, f32 y){
+  return(powf(x, y));
+}
 
-    function f32
-    mod_f32(f32 x, i32 m){
-    f32 whole;
-    f32 frac = modff(x, &whole);
-    f32 r = ((i32)(whole) % m) + frac;
-    return(r);
-    }
+function f32
+mod_f32(f32 x, i32 m){
+  f32 whole;
+  f32 frac = modff(x, &whole);
+  f32 r = ((i32)(whole) % m) + frac;
+  return(r);
+}
 
-    function f32
-    sin_f32(f32 x){
-    return(sinf(x));
-    }
+function f32
+sin_f32(f32 x){
+  return(sinf(x));
+}
 
-    function f32
-    cos_f32(f32 x){
-    return(cosf(x));
-    }
-    #endif
+function f32
+cos_f32(f32 x){
+  return(cosf(x));
+}
+#endif
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function Vec2_i8
-    V2i8(i8 x, i8 y){
-    Vec2_i8 v = {x, y};
-    return(v);
-    }
-    function Vec3_i8
-    V3i8(i8 x, i8 y, i8 z){
-    Vec3_i8 v = {x, y, z};
-    return(v);
-    }
-    function Vec4_i8
-    V4i8(i8 x, i8 y, i8 z, i8 w){
-    Vec4_i8 v = {x, y, z, w};
-    return(v);
-    }
-    function Vec2_i16
-    V2i16(i16 x, i16 y){
-    Vec2_i16 v = {x, y};
-    return(v);
-    }
-    function Vec3_i16
-    V3i16(i16 x, i16 y, i16 z){
-    Vec3_i16 v = {x, y, z};
-    return(v);
-    }
-    function Vec4_i16
-    V4i16(i16 x, i16 y, i16 z, i16 w){
-    Vec4_i16 v = {x, y, z, w};
-    return(v);
-    }
-    function Vec2_i32
-    V2i32(i32 x, i32 y){
-    Vec2_i32 v = {x, y};
-    return(v);
-    }
-    function Vec3_i32
-    V3i32(i32 x, i32 y, i32 z){
-    Vec3_i32 v = {x, y, z};
-    return(v);
-    }
-    function Vec4_i32
-    V4i32(i32 x, i32 y, i32 z, i32 w){
-    Vec4_i32 v = {x, y, z, w};
-    return(v);
-    }
-    function Vec2_f32
-    V2f32(f32 x, f32 y){
-    Vec2_f32 v = {x, y};
-    return(v);
-    }
-    function Vec3_f32
-    V3f32(f32 x, f32 y, f32 z){
-    Vec3_f32 v = {x, y, z};
-    return(v);
-    }
-    function Vec4_f32
-    V4f32(f32 x, f32 y, f32 z, f32 w){
-    Vec4_f32 v = {x, y, z, w};
-    return(v);
-    }
+function Vec2_i8
+V2i8(i8 x, i8 y){
+  Vec2_i8 v = {x, y};
+  return(v);
+}
+function Vec3_i8
+V3i8(i8 x, i8 y, i8 z){
+  Vec3_i8 v = {x, y, z};
+  return(v);
+}
+function Vec4_i8
+V4i8(i8 x, i8 y, i8 z, i8 w){
+  Vec4_i8 v = {x, y, z, w};
+  return(v);
+}
+function Vec2_i16
+V2i16(i16 x, i16 y){
+  Vec2_i16 v = {x, y};
+  return(v);
+}
+function Vec3_i16
+V3i16(i16 x, i16 y, i16 z){
+  Vec3_i16 v = {x, y, z};
+  return(v);
+}
+function Vec4_i16
+V4i16(i16 x, i16 y, i16 z, i16 w){
+  Vec4_i16 v = {x, y, z, w};
+  return(v);
+}
+function Vec2_i32
+V2i32(i32 x, i32 y){
+  Vec2_i32 v = {x, y};
+  return(v);
+}
+function Vec3_i32
+V3i32(i32 x, i32 y, i32 z){
+  Vec3_i32 v = {x, y, z};
+  return(v);
+}
+function Vec4_i32
+V4i32(i32 x, i32 y, i32 z, i32 w){
+  Vec4_i32 v = {x, y, z, w};
+  return(v);
+}
+function Vec2_f32
+V2f32(f32 x, f32 y){
+  Vec2_f32 v = {x, y};
+  return(v);
+}
+function Vec3_f32
+V3f32(f32 x, f32 y, f32 z){
+  Vec3_f32 v = {x, y, z};
+  return(v);
+}
+function Vec4_f32
+V4f32(f32 x, f32 y, f32 z, f32 w){
+  Vec4_f32 v = {x, y, z, w};
+  return(v);
+}
 
-    function Vec2_i8
-    V2i8(Vec2_i8 o){
-    return(V2i8((i8)o.x, (i8)o.y));
-    }
-    function Vec2_i8
-    V2i8(Vec2_i16 o){
-    return(V2i8((i8)o.x, (i8)o.y));
-    }
-    function Vec2_i8
-    V2i8(Vec2_i32 o){
-    return(V2i8((i8)o.x, (i8)o.y));
-    }
-    function Vec2_i8
-    V2i8(Vec2_f32 o){
-    return(V2i8((i8)o.x, (i8)o.y));
-    }
-    function Vec3_i8
-    V3i8(Vec3_i8 o){
-    return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
-    }
-    function Vec3_i8
-    V3i8(Vec3_i16 o){
-    return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
-    }
-    function Vec3_i8
-    V3i8(Vec3_i32 o){
-    return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
-    }
-    function Vec3_i8
-    V3i8(Vec3_f32 o){
-    return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
-    }
-    function Vec4_i8
-    V4i8(Vec4_i8 o){
-    return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
-    }
-    function Vec4_i8
-    V4i8(Vec4_i16 o){
-    return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
-    }
-    function Vec4_i8
-    V4i8(Vec4_i32 o){
-    return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
-    }
-    function Vec4_i8
-    V4i8(Vec4_f32 o){
-    return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
-    }
-    function Vec2_i16
-    V2i16(Vec2_i8 o){
-    return(V2i16((i16)o.x, (i16)o.y));
-    }
-    function Vec2_i16
-    V2i16(Vec2_i16 o){
-    return(V2i16((i16)o.x, (i16)o.y));
-    }
-    function Vec2_i16
-    V2i16(Vec2_i32 o){
-    return(V2i16((i16)o.x, (i16)o.y));
-    }
-    function Vec2_i16
-    V2i16(Vec2_f32 o){
-    return(V2i16((i16)o.x, (i16)o.y));
-    }
-    function Vec3_i16
-    V3i16(Vec3_i8 o){
-    return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
-    }
-    function Vec3_i16
-    V3i16(Vec3_i16 o){
-    return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
-    }
-    function Vec3_i16
-    V3i16(Vec3_i32 o){
-    return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
-    }
-    function Vec3_i16
-    V3i16(Vec3_f32 o){
-    return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
-    }
-    function Vec4_i16
-    V4i16(Vec4_i8 o){
-    return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
-    }
-    function Vec4_i16
-    V4i16(Vec4_i16 o){
-    return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
-    }
-    function Vec4_i16
-    V4i16(Vec4_i32 o){
-    return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
-    }
-    function Vec4_i16
-    V4i16(Vec4_f32 o){
-    return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
-    }
-    function Vec2_i32
-    V2i32(Vec2_i8 o){
-    return(V2i32((i32)o.x, (i32)o.y));
-    }
-    function Vec2_i32
-    V2i32(Vec2_i16 o){
-    return(V2i32((i32)o.x, (i32)o.y));
-    }
-    function Vec2_i32
-    V2i32(Vec2_i32 o){
-    return(V2i32((i32)o.x, (i32)o.y));
-    }
-    function Vec2_i32
-    V2i32(Vec2_f32 o){
-    return(V2i32((i32)o.x, (i32)o.y));
-    }
-    function Vec3_i32
-    V3i32(Vec3_i8 o){
-    return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
-    }
-    function Vec3_i32
-    V3i32(Vec3_i16 o){
-    return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
-    }
-    function Vec3_i32
-    V3i32(Vec3_i32 o){
-    return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
-    }
-    function Vec3_i32
-    V3i32(Vec3_f32 o){
-    return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
-    }
-    function Vec4_i32
-    V4i32(Vec4_i8 o){
-    return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
-    }
-    function Vec4_i32
-    V4i32(Vec4_i16 o){
-    return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
-    }
-    function Vec4_i32
-    V4i32(Vec4_i32 o){
-    return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
-    }
-    function Vec4_i32
-    V4i32(Vec4_f32 o){
-    return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
-    }
-    function Vec2_f32
-    V2f32(Vec2_i8 o){
-    return(V2f32((f32)o.x, (f32)o.y));
-    }
-    function Vec2_f32
-    V2f32(Vec2_i16 o){
-    return(V2f32((f32)o.x, (f32)o.y));
-    }
-    function Vec2_f32
-    V2f32(Vec2_i32 o){
-    return(V2f32((f32)o.x, (f32)o.y));
-    }
-    function Vec2_f32
-    V2f32(Vec2_f32 o){
-    return(V2f32((f32)o.x, (f32)o.y));
-    }
-    function Vec3_f32
-    V3f32(Vec3_i8 o){
-    return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
-    }
-    function Vec3_f32
-    V3f32(Vec3_i16 o){
-    return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
-    }
-    function Vec3_f32
-    V3f32(Vec3_i32 o){
-    return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
-    }
-    function Vec3_f32
-    V3f32(Vec3_f32 o){
-    return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
-    }
-    function Vec4_f32
-    V4f32(Vec4_i8 o){
-    return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
-    }
-    function Vec4_f32
-    V4f32(Vec4_i16 o){
-    return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
-    }
-    function Vec4_f32
-    V4f32(Vec4_i32 o){
-    return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
-    }
-    function Vec4_f32
-    V4f32(Vec4_f32 o){
-    return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
-    }
+function Vec2_i8
+V2i8(Vec2_i8 o){
+  return(V2i8((i8)o.x, (i8)o.y));
+}
+function Vec2_i8
+V2i8(Vec2_i16 o){
+  return(V2i8((i8)o.x, (i8)o.y));
+}
+function Vec2_i8
+V2i8(Vec2_i32 o){
+  return(V2i8((i8)o.x, (i8)o.y));
+}
+function Vec2_i8
+V2i8(Vec2_f32 o){
+  return(V2i8((i8)o.x, (i8)o.y));
+}
+function Vec3_i8
+V3i8(Vec3_i8 o){
+  return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
+}
+function Vec3_i8
+V3i8(Vec3_i16 o){
+  return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
+}
+function Vec3_i8
+V3i8(Vec3_i32 o){
+  return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
+}
+function Vec3_i8
+V3i8(Vec3_f32 o){
+  return(V3i8((i8)o.x, (i8)o.y, (i8)o.z));
+}
+function Vec4_i8
+V4i8(Vec4_i8 o){
+  return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
+}
+function Vec4_i8
+V4i8(Vec4_i16 o){
+  return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
+}
+function Vec4_i8
+V4i8(Vec4_i32 o){
+  return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
+}
+function Vec4_i8
+V4i8(Vec4_f32 o){
+  return(V4i8((i8)o.x, (i8)o.y, (i8)o.z, (i8)o.w));
+}
+function Vec2_i16
+V2i16(Vec2_i8 o){
+  return(V2i16((i16)o.x, (i16)o.y));
+}
+function Vec2_i16
+V2i16(Vec2_i16 o){
+  return(V2i16((i16)o.x, (i16)o.y));
+}
+function Vec2_i16
+V2i16(Vec2_i32 o){
+  return(V2i16((i16)o.x, (i16)o.y));
+}
+function Vec2_i16
+V2i16(Vec2_f32 o){
+  return(V2i16((i16)o.x, (i16)o.y));
+}
+function Vec3_i16
+V3i16(Vec3_i8 o){
+  return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
+}
+function Vec3_i16
+V3i16(Vec3_i16 o){
+  return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
+}
+function Vec3_i16
+V3i16(Vec3_i32 o){
+  return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
+}
+function Vec3_i16
+V3i16(Vec3_f32 o){
+  return(V3i16((i16)o.x, (i16)o.y, (i16)o.z));
+}
+function Vec4_i16
+V4i16(Vec4_i8 o){
+  return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
+}
+function Vec4_i16
+V4i16(Vec4_i16 o){
+  return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
+}
+function Vec4_i16
+V4i16(Vec4_i32 o){
+  return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
+}
+function Vec4_i16
+V4i16(Vec4_f32 o){
+  return(V4i16((i16)o.x, (i16)o.y, (i16)o.z, (i16)o.w));
+}
+function Vec2_i32
+V2i32(Vec2_i8 o){
+  return(V2i32((i32)o.x, (i32)o.y));
+}
+function Vec2_i32
+V2i32(Vec2_i16 o){
+  return(V2i32((i32)o.x, (i32)o.y));
+}
+function Vec2_i32
+V2i32(Vec2_i32 o){
+  return(V2i32((i32)o.x, (i32)o.y));
+}
+function Vec2_i32
+V2i32(Vec2_f32 o){
+  return(V2i32((i32)o.x, (i32)o.y));
+}
+function Vec3_i32
+V3i32(Vec3_i8 o){
+  return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
+}
+function Vec3_i32
+V3i32(Vec3_i16 o){
+  return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
+}
+function Vec3_i32
+V3i32(Vec3_i32 o){
+  return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
+}
+function Vec3_i32
+V3i32(Vec3_f32 o){
+  return(V3i32((i32)o.x, (i32)o.y, (i32)o.z));
+}
+function Vec4_i32
+V4i32(Vec4_i8 o){
+  return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
+}
+function Vec4_i32
+V4i32(Vec4_i16 o){
+  return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
+}
+function Vec4_i32
+V4i32(Vec4_i32 o){
+  return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
+}
+function Vec4_i32
+V4i32(Vec4_f32 o){
+  return(V4i32((i32)o.x, (i32)o.y, (i32)o.z, (i32)o.w));
+}
+function Vec2_f32
+V2f32(Vec2_i8 o){
+  return(V2f32((f32)o.x, (f32)o.y));
+}
+function Vec2_f32
+V2f32(Vec2_i16 o){
+  return(V2f32((f32)o.x, (f32)o.y));
+}
+function Vec2_f32
+V2f32(Vec2_i32 o){
+  return(V2f32((f32)o.x, (f32)o.y));
+}
+function Vec2_f32
+V2f32(Vec2_f32 o){
+  return(V2f32((f32)o.x, (f32)o.y));
+}
+function Vec3_f32
+V3f32(Vec3_i8 o){
+  return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
+}
+function Vec3_f32
+V3f32(Vec3_i16 o){
+  return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
+}
+function Vec3_f32
+V3f32(Vec3_i32 o){
+  return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
+}
+function Vec3_f32
+V3f32(Vec3_f32 o){
+  return(V3f32((f32)o.x, (f32)o.y, (f32)o.z));
+}
+function Vec4_f32
+V4f32(Vec4_i8 o){
+  return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
+}
+function Vec4_f32
+V4f32(Vec4_i16 o){
+  return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
+}
+function Vec4_f32
+V4f32(Vec4_i32 o){
+  return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
+}
+function Vec4_f32
+V4f32(Vec4_f32 o){
+  return(V4f32((f32)o.x, (f32)o.y, (f32)o.z, (f32)o.w));
+}
 
-    function Vec2_i8
-    operator+(Vec2_i8 a, Vec2_i8 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_i8
-    operator+(Vec3_i8 a, Vec3_i8 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_i8
-    operator+(Vec4_i8 a, Vec4_i8 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
-    function Vec2_i16
-    operator+(Vec2_i16 a, Vec2_i16 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_i16
-    operator+(Vec3_i16 a, Vec3_i16 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_i16
-    operator+(Vec4_i16 a, Vec4_i16 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
-    function Vec2_i32
-    operator+(Vec2_i32 a, Vec2_i32 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_i32
-    operator+(Vec3_i32 a, Vec3_i32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_i32
-    operator+(Vec4_i32 a, Vec4_i32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
-    function Vec2_f32
-    operator+(Vec2_f32 a, Vec2_f32 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_f32
-    operator+(Vec3_f32 a, Vec3_f32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_f32
-    operator+(Vec4_f32 a, Vec4_f32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
+function Vec2_i8
+operator+(Vec2_i8 a, Vec2_i8 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_i8
+operator+(Vec3_i8 a, Vec3_i8 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_i8
+operator+(Vec4_i8 a, Vec4_i8 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
+function Vec2_i16
+operator+(Vec2_i16 a, Vec2_i16 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_i16
+operator+(Vec3_i16 a, Vec3_i16 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_i16
+operator+(Vec4_i16 a, Vec4_i16 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
+function Vec2_i32
+operator+(Vec2_i32 a, Vec2_i32 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_i32
+operator+(Vec3_i32 a, Vec3_i32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_i32
+operator+(Vec4_i32 a, Vec4_i32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
+function Vec2_f32
+operator+(Vec2_f32 a, Vec2_f32 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_f32
+operator+(Vec3_f32 a, Vec3_f32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_f32
+operator+(Vec4_f32 a, Vec4_f32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
 
-    function Vec2_i8&
-    operator+=(Vec2_i8 &a, Vec2_i8 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_i8&
-    operator+=(Vec3_i8 &a, Vec3_i8 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_i8&
-    operator+=(Vec4_i8 &a, Vec4_i8 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
-    function Vec2_i16&
-    operator+=(Vec2_i16 &a, Vec2_i16 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_i16&
-    operator+=(Vec3_i16 &a, Vec3_i16 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_i16&
-    operator+=(Vec4_i16 &a, Vec4_i16 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
-    function Vec2_i32&
-    operator+=(Vec2_i32 &a, Vec2_i32 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_i32&
-    operator+=(Vec3_i32 &a, Vec3_i32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_i32&
-    operator+=(Vec4_i32 &a, Vec4_i32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
-    function Vec2_f32&
-    operator+=(Vec2_f32 &a, Vec2_f32 b){
-    a.x += b.x;
-    a.y += b.y;
-    return(a);
-    }
-    function Vec3_f32&
-    operator+=(Vec3_f32 &a, Vec3_f32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    return(a);
-    }
-    function Vec4_f32&
-    operator+=(Vec4_f32 &a, Vec4_f32 b){
-    a.x += b.x;
-    a.y += b.y;
-    a.z += b.z;
-    a.w += b.w;
-    return(a);
-    }
+function Vec2_i8&
+operator+=(Vec2_i8 &a, Vec2_i8 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_i8&
+operator+=(Vec3_i8 &a, Vec3_i8 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_i8&
+operator+=(Vec4_i8 &a, Vec4_i8 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
+function Vec2_i16&
+operator+=(Vec2_i16 &a, Vec2_i16 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_i16&
+operator+=(Vec3_i16 &a, Vec3_i16 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_i16&
+operator+=(Vec4_i16 &a, Vec4_i16 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
+function Vec2_i32&
+operator+=(Vec2_i32 &a, Vec2_i32 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_i32&
+operator+=(Vec3_i32 &a, Vec3_i32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_i32&
+operator+=(Vec4_i32 &a, Vec4_i32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
+function Vec2_f32&
+operator+=(Vec2_f32 &a, Vec2_f32 b){
+  a.x += b.x;
+  a.y += b.y;
+  return(a);
+}
+function Vec3_f32&
+operator+=(Vec3_f32 &a, Vec3_f32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return(a);
+}
+function Vec4_f32&
+operator+=(Vec4_f32 &a, Vec4_f32 b){
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  a.w += b.w;
+  return(a);
+}
 
-    function Vec2_i8
-    operator-(Vec2_i8 a, Vec2_i8 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_i8
-    operator-(Vec3_i8 a, Vec3_i8 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_i8
-    operator-(Vec4_i8 a, Vec4_i8 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
-    function Vec2_i16
-    operator-(Vec2_i16 a, Vec2_i16 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_i16
-    operator-(Vec3_i16 a, Vec3_i16 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_i16
-    operator-(Vec4_i16 a, Vec4_i16 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
-    function Vec2_i32
-    operator-(Vec2_i32 a, Vec2_i32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_i32
-    operator-(Vec3_i32 a, Vec3_i32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_i32
-    operator-(Vec4_i32 a, Vec4_i32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
-    function Vec2_f32
-    operator-(Vec2_f32 a, Vec2_f32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_f32
-    operator-(Vec3_f32 a, Vec3_f32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_f32
-    operator-(Vec4_f32 a, Vec4_f32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
+function Vec2_i8
+operator-(Vec2_i8 a, Vec2_i8 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_i8
+operator-(Vec3_i8 a, Vec3_i8 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_i8
+operator-(Vec4_i8 a, Vec4_i8 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
+function Vec2_i16
+operator-(Vec2_i16 a, Vec2_i16 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_i16
+operator-(Vec3_i16 a, Vec3_i16 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_i16
+operator-(Vec4_i16 a, Vec4_i16 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
+function Vec2_i32
+operator-(Vec2_i32 a, Vec2_i32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_i32
+operator-(Vec3_i32 a, Vec3_i32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_i32
+operator-(Vec4_i32 a, Vec4_i32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
+function Vec2_f32
+operator-(Vec2_f32 a, Vec2_f32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_f32
+operator-(Vec3_f32 a, Vec3_f32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_f32
+operator-(Vec4_f32 a, Vec4_f32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
 
-    function Vec2_i8&
-    operator-=(Vec2_i8 &a, Vec2_i8 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_i8&
-    operator-=(Vec3_i8 &a, Vec3_i8 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_i8&
-    operator-=(Vec4_i8 &a, Vec4_i8 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
-    function Vec2_i16&
-    operator-=(Vec2_i16 &a, Vec2_i16 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_i16&
-    operator-=(Vec3_i16 &a, Vec3_i16 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_i16&
-    operator-=(Vec4_i16 &a, Vec4_i16 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
-    function Vec2_i32&
-    operator-=(Vec2_i32 &a, Vec2_i32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_i32&
-    operator-=(Vec3_i32 &a, Vec3_i32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_i32&
-    operator-=(Vec4_i32 &a, Vec4_i32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
-    function Vec2_f32&
-    operator-=(Vec2_f32 &a, Vec2_f32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    return(a);
-    }
-    function Vec3_f32&
-    operator-=(Vec3_f32 &a, Vec3_f32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    return(a);
-    }
-    function Vec4_f32&
-    operator-=(Vec4_f32 &a, Vec4_f32 b){
-    a.x -= b.x;
-    a.y -= b.y;
-    a.z -= b.z;
-    a.w -= b.w;
-    return(a);
-    }
+function Vec2_i8&
+operator-=(Vec2_i8 &a, Vec2_i8 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_i8&
+operator-=(Vec3_i8 &a, Vec3_i8 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_i8&
+operator-=(Vec4_i8 &a, Vec4_i8 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
+function Vec2_i16&
+operator-=(Vec2_i16 &a, Vec2_i16 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_i16&
+operator-=(Vec3_i16 &a, Vec3_i16 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_i16&
+operator-=(Vec4_i16 &a, Vec4_i16 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
+function Vec2_i32&
+operator-=(Vec2_i32 &a, Vec2_i32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_i32&
+operator-=(Vec3_i32 &a, Vec3_i32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_i32&
+operator-=(Vec4_i32 &a, Vec4_i32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
+function Vec2_f32&
+operator-=(Vec2_f32 &a, Vec2_f32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  return(a);
+}
+function Vec3_f32&
+operator-=(Vec3_f32 &a, Vec3_f32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return(a);
+}
+function Vec4_f32&
+operator-=(Vec4_f32 &a, Vec4_f32 b){
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  a.w -= b.w;
+  return(a);
+}
 
-    function Vec2_i8
-    operator*(i8 s, Vec2_i8 v){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec2_i8
-    operator*(Vec2_i8 v, i8 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_i8
-    operator*(i8 s, Vec3_i8 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec3_i8
-    operator*(Vec3_i8 v, i8 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_i8
-    operator*(i8 s, Vec4_i8 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec4_i8
-    operator*(Vec4_i8 v, i8 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec2_i16
-    operator*(i16 s, Vec2_i16 v){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec2_i16
-    operator*(Vec2_i16 v, i16 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_i16
-    operator*(i16 s, Vec3_i16 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec3_i16
-    operator*(Vec3_i16 v, i16 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_i16
-    operator*(i16 s, Vec4_i16 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec4_i16
-    operator*(Vec4_i16 v, i16 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec2_i32
-    operator*(i32 s, Vec2_i32 v){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec2_i32
-    operator*(Vec2_i32 v, i32 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_i32
-    operator*(i32 s, Vec3_i32 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec3_i32
-    operator*(Vec3_i32 v, i32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_i32
-    operator*(i32 s, Vec4_i32 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec4_i32
-    operator*(Vec4_i32 v, i32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec2_f32
-    operator*(f32 s, Vec2_f32 v){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec2_f32
-    operator*(Vec2_f32 v, f32 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_f32
-    operator*(f32 s, Vec3_f32 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec3_f32
-    operator*(Vec3_f32 v, f32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_f32
-    operator*(f32 s, Vec4_f32 v){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec4_f32
-    operator*(Vec4_f32 v, f32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
+function Vec2_i8
+operator*(i8 s, Vec2_i8 v){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec2_i8
+operator*(Vec2_i8 v, i8 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_i8
+operator*(i8 s, Vec3_i8 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec3_i8
+operator*(Vec3_i8 v, i8 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_i8
+operator*(i8 s, Vec4_i8 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec4_i8
+operator*(Vec4_i8 v, i8 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec2_i16
+operator*(i16 s, Vec2_i16 v){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec2_i16
+operator*(Vec2_i16 v, i16 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_i16
+operator*(i16 s, Vec3_i16 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec3_i16
+operator*(Vec3_i16 v, i16 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_i16
+operator*(i16 s, Vec4_i16 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec4_i16
+operator*(Vec4_i16 v, i16 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec2_i32
+operator*(i32 s, Vec2_i32 v){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec2_i32
+operator*(Vec2_i32 v, i32 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_i32
+operator*(i32 s, Vec3_i32 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec3_i32
+operator*(Vec3_i32 v, i32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_i32
+operator*(i32 s, Vec4_i32 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec4_i32
+operator*(Vec4_i32 v, i32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec2_f32
+operator*(f32 s, Vec2_f32 v){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec2_f32
+operator*(Vec2_f32 v, f32 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_f32
+operator*(f32 s, Vec3_f32 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec3_f32
+operator*(Vec3_f32 v, f32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_f32
+operator*(f32 s, Vec4_f32 v){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec4_f32
+operator*(Vec4_f32 v, f32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
 
-    function Vec2_i8&
-    operator*=(Vec2_i8 &v, i8 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_i8&
-    operator*=(Vec3_i8 &v, i8 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_i8&
-    operator*=(Vec4_i8 &v, i8 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec2_i16&
-    operator*=(Vec2_i16 &v, i16 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_i16&
-    operator*=(Vec3_i16 &v, i16 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_i16&
-    operator*=(Vec4_i16 &v, i16 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec2_i32&
-    operator*=(Vec2_i32 &v, i32 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_i32&
-    operator*=(Vec3_i32 &v, i32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_i32&
-    operator*=(Vec4_i32 &v, i32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
-    function Vec2_f32&
-    operator*=(Vec2_f32 &v, f32 s){
-    v.x *= s;
-    v.y *= s;
-    return(v);
-    }
-    function Vec3_f32&
-    operator*=(Vec3_f32 &v, f32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    return(v);
-    }
-    function Vec4_f32&
-    operator*=(Vec4_f32 &v, f32 s){
-    v.x *= s;
-    v.y *= s;
-    v.z *= s;
-    v.w *= s;
-    return(v);
-    }
+function Vec2_i8&
+operator*=(Vec2_i8 &v, i8 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_i8&
+operator*=(Vec3_i8 &v, i8 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_i8&
+operator*=(Vec4_i8 &v, i8 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec2_i16&
+operator*=(Vec2_i16 &v, i16 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_i16&
+operator*=(Vec3_i16 &v, i16 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_i16&
+operator*=(Vec4_i16 &v, i16 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec2_i32&
+operator*=(Vec2_i32 &v, i32 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_i32&
+operator*=(Vec3_i32 &v, i32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_i32&
+operator*=(Vec4_i32 &v, i32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
+function Vec2_f32&
+operator*=(Vec2_f32 &v, f32 s){
+  v.x *= s;
+  v.y *= s;
+  return(v);
+}
+function Vec3_f32&
+operator*=(Vec3_f32 &v, f32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  return(v);
+}
+function Vec4_f32&
+operator*=(Vec4_f32 &v, f32 s){
+  v.x *= s;
+  v.y *= s;
+  v.z *= s;
+  v.w *= s;
+  return(v);
+}
 
-    function Vec2_i8
-    operator/(Vec2_i8 v, i8 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_i8
-    operator/(Vec3_i8 v, i8 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_i8
-    operator/(Vec4_i8 v, i8 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
-    function Vec2_i16
-    operator/(Vec2_i16 v, i16 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_i16
-    operator/(Vec3_i16 v, i16 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_i16
-    operator/(Vec4_i16 v, i16 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
-    function Vec2_i32
-    operator/(Vec2_i32 v, i32 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_i32
-    operator/(Vec3_i32 v, i32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_i32
-    operator/(Vec4_i32 v, i32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
-    function Vec2_f32
-    operator/(Vec2_f32 v, f32 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_f32
-    operator/(Vec3_f32 v, f32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_f32
-    operator/(Vec4_f32 v, f32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
+function Vec2_i8
+operator/(Vec2_i8 v, i8 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_i8
+operator/(Vec3_i8 v, i8 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_i8
+operator/(Vec4_i8 v, i8 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
+function Vec2_i16
+operator/(Vec2_i16 v, i16 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_i16
+operator/(Vec3_i16 v, i16 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_i16
+operator/(Vec4_i16 v, i16 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
+function Vec2_i32
+operator/(Vec2_i32 v, i32 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_i32
+operator/(Vec3_i32 v, i32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_i32
+operator/(Vec4_i32 v, i32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
+function Vec2_f32
+operator/(Vec2_f32 v, f32 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_f32
+operator/(Vec3_f32 v, f32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_f32
+operator/(Vec4_f32 v, f32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
 
-    function Vec2_i8&
-    operator/=(Vec2_i8 &v, i8 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_i8&
-    operator/=(Vec3_i8 &v, i8 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_i8&
-    operator/=(Vec4_i8 &v, i8 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
-    function Vec2_i16&
-    operator/=(Vec2_i16 &v, i16 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_i16&
-    operator/=(Vec3_i16 &v, i16 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_i16&
-    operator/=(Vec4_i16 &v, i16 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
-    function Vec2_i32&
-    operator/=(Vec2_i32 &v, i32 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_i32&
-    operator/=(Vec3_i32 &v, i32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_i32&
-    operator/=(Vec4_i32 &v, i32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
-    function Vec2_f32&
-    operator/=(Vec2_f32 &v, f32 s){
-    v.x /= s;
-    v.y /= s;
-    return(v);
-    }
-    function Vec3_f32&
-    operator/=(Vec3_f32 &v, f32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    return(v);
-    }
-    function Vec4_f32&
-    operator/=(Vec4_f32 &v, f32 s){
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
-    v.w /= s;
-    return(v);
-    }
+function Vec2_i8&
+operator/=(Vec2_i8 &v, i8 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_i8&
+operator/=(Vec3_i8 &v, i8 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_i8&
+operator/=(Vec4_i8 &v, i8 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
+function Vec2_i16&
+operator/=(Vec2_i16 &v, i16 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_i16&
+operator/=(Vec3_i16 &v, i16 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_i16&
+operator/=(Vec4_i16 &v, i16 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
+function Vec2_i32&
+operator/=(Vec2_i32 &v, i32 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_i32&
+operator/=(Vec3_i32 &v, i32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_i32&
+operator/=(Vec4_i32 &v, i32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
+function Vec2_f32&
+operator/=(Vec2_f32 &v, f32 s){
+  v.x /= s;
+  v.y /= s;
+  return(v);
+}
+function Vec3_f32&
+operator/=(Vec3_f32 &v, f32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  return(v);
+}
+function Vec4_f32&
+operator/=(Vec4_f32 &v, f32 s){
+  v.x /= s;
+  v.y /= s;
+  v.z /= s;
+  v.w /= s;
+  return(v);
+}
 
-    function b32
-    operator==(Vec2_i8 a, Vec2_i8 b){
-    return(a.x == b.x && a.y == b.y);
-    }
-    function b32
-    operator==(Vec3_i8 a, Vec3_i8 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z);
-    }
-    function b32
-    operator==(Vec4_i8 a, Vec4_i8 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
-    }
-    function b32
-    operator==(Vec2_i16 a, Vec2_i16 b){
-    return(a.x == b.x && a.y == b.y);
-    }
-    function b32
-    operator==(Vec3_i16 a, Vec3_i16 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z);
-    }
-    function b32
-    operator==(Vec4_i16 a, Vec4_i16 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
-    }
-    function b32
-    operator==(Vec2_i32 a, Vec2_i32 b){
-    return(a.x == b.x && a.y == b.y);
-    }
-    function b32
-    operator==(Vec3_i32 a, Vec3_i32 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z);
-    }
-    function b32
-    operator==(Vec4_i32 a, Vec4_i32 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
-    }
-    function b32
-    operator==(Vec2_f32 a, Vec2_f32 b){
-    return(a.x == b.x && a.y == b.y);
-    }
-    function b32
-    operator==(Vec3_f32 a, Vec3_f32 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z);
-    }
-    function b32
-    operator==(Vec4_f32 a, Vec4_f32 b){
-    return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
-    }
+function b32
+operator==(Vec2_i8 a, Vec2_i8 b){
+  return(a.x == b.x && a.y == b.y);
+}
+function b32
+operator==(Vec3_i8 a, Vec3_i8 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z);
+}
+function b32
+operator==(Vec4_i8 a, Vec4_i8 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
+}
+function b32
+operator==(Vec2_i16 a, Vec2_i16 b){
+  return(a.x == b.x && a.y == b.y);
+}
+function b32
+operator==(Vec3_i16 a, Vec3_i16 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z);
+}
+function b32
+operator==(Vec4_i16 a, Vec4_i16 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
+}
+function b32
+operator==(Vec2_i32 a, Vec2_i32 b){
+  return(a.x == b.x && a.y == b.y);
+}
+function b32
+operator==(Vec3_i32 a, Vec3_i32 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z);
+}
+function b32
+operator==(Vec4_i32 a, Vec4_i32 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
+}
+function b32
+operator==(Vec2_f32 a, Vec2_f32 b){
+  return(a.x == b.x && a.y == b.y);
+}
+function b32
+operator==(Vec3_f32 a, Vec3_f32 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z);
+}
+function b32
+operator==(Vec4_f32 a, Vec4_f32 b){
+  return(a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
+}
 
-    function b32
-    operator!=(Vec2_i8 a, Vec2_i8 b){
-    return(a.x != b.x || a.y != b.y);
-    }
-    function b32
-    operator!=(Vec3_i8 a, Vec3_i8 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z);
-    }
-    function b32
-    operator!=(Vec4_i8 a, Vec4_i8 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
-    }
-    function b32
-    operator!=(Vec2_i16 a, Vec2_i16 b){
-    return(a.x != b.x || a.y != b.y);
-    }
-    function b32
-    operator!=(Vec3_i16 a, Vec3_i16 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z);
-    }
-    function b32
-    operator!=(Vec4_i16 a, Vec4_i16 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
-    }
-    function b32
-    operator!=(Vec2_i32 a, Vec2_i32 b){
-    return(a.x != b.x || a.y != b.y);
-    }
-    function b32
-    operator!=(Vec3_i32 a, Vec3_i32 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z);
-    }
-    function b32
-    operator!=(Vec4_i32 a, Vec4_i32 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
-    }
-    function b32
-    operator!=(Vec2_f32 a, Vec2_f32 b){
-    return(a.x != b.x || a.y != b.y);
-    }
-    function b32
-    operator!=(Vec3_f32 a, Vec3_f32 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z);
-    }
-    function b32
-    operator!=(Vec4_f32 a, Vec4_f32 b){
-    return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
-    }
+function b32
+operator!=(Vec2_i8 a, Vec2_i8 b){
+  return(a.x != b.x || a.y != b.y);
+}
+function b32
+operator!=(Vec3_i8 a, Vec3_i8 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z);
+}
+function b32
+operator!=(Vec4_i8 a, Vec4_i8 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
+}
+function b32
+operator!=(Vec2_i16 a, Vec2_i16 b){
+  return(a.x != b.x || a.y != b.y);
+}
+function b32
+operator!=(Vec3_i16 a, Vec3_i16 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z);
+}
+function b32
+operator!=(Vec4_i16 a, Vec4_i16 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
+}
+function b32
+operator!=(Vec2_i32 a, Vec2_i32 b){
+  return(a.x != b.x || a.y != b.y);
+}
+function b32
+operator!=(Vec3_i32 a, Vec3_i32 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z);
+}
+function b32
+operator!=(Vec4_i32 a, Vec4_i32 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
+}
+function b32
+operator!=(Vec2_f32 a, Vec2_f32 b){
+  return(a.x != b.x || a.y != b.y);
+}
+function b32
+operator!=(Vec3_f32 a, Vec3_f32 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z);
+}
+function b32
+operator!=(Vec4_f32 a, Vec4_f32 b){
+  return(a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
+}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function b32
-    near_zero(f32 p, f32 epsilon){
-    return(-epsilon <= p && p <= epsilon);
-    }
-    function b32
-    near_zero(Vec2_f32 p, f32 epsilon){
-    return(-epsilon <= p.x && p.x <= epsilon &&
-    -epsilon <= p.y && p.y <= epsilon);
-    }
-    function b32
-    near_zero(Vec3_f32 p, f32 epsilon){
-    return(-epsilon <= p.x && p.x <= epsilon &&
-    -epsilon <= p.y && p.y <= epsilon &&
-    -epsilon <= p.z && p.z <= epsilon);
-    }
-    function b32
-    near_zero(Vec4_f32 p, f32 epsilon){
-    return(-epsilon <= p.x && p.x <= epsilon &&
-    -epsilon <= p.y && p.y <= epsilon &&
-    -epsilon <= p.z && p.z <= epsilon &&
-    -epsilon <= p.w && p.w <= epsilon);
-    }
+function b32
+near_zero(f32 p, f32 epsilon){
+  return(-epsilon <= p && p <= epsilon);
+}
+function b32
+near_zero(Vec2_f32 p, f32 epsilon){
+  return(-epsilon <= p.x && p.x <= epsilon &&
+         -epsilon <= p.y && p.y <= epsilon);
+}
+function b32
+near_zero(Vec3_f32 p, f32 epsilon){
+  return(-epsilon <= p.x && p.x <= epsilon &&
+         -epsilon <= p.y && p.y <= epsilon &&
+         -epsilon <= p.z && p.z <= epsilon);
+}
+function b32
+near_zero(Vec4_f32 p, f32 epsilon){
+  return(-epsilon <= p.x && p.x <= epsilon &&
+         -epsilon <= p.y && p.y <= epsilon &&
+         -epsilon <= p.z && p.z <= epsilon &&
+         -epsilon <= p.w && p.w <= epsilon);
+}
 
-    function b32
-    near_zero(f32 p){ return(near_zero(p, epsilon_f32)); }
-    function b32
-    near_zero(Vec2_f32 p){ return(near_zero(p, epsilon_f32)); }
-    function b32
-    near_zero(Vec3_f32 p){ return(near_zero(p, epsilon_f32)); }
-    function b32
-    near_zero(Vec4_f32 p){ return(near_zero(p, epsilon_f32)); }
+function b32
+near_zero(f32 p){ return(near_zero(p, epsilon_f32)); }
+function b32
+near_zero(Vec2_f32 p){ return(near_zero(p, epsilon_f32)); }
+function b32
+near_zero(Vec3_f32 p){ return(near_zero(p, epsilon_f32)); }
+function b32
+near_zero(Vec4_f32 p){ return(near_zero(p, epsilon_f32)); }
 
-    function Vec2_f32
-    hadamard(Vec2_f32 a, Vec2_f32 b){
-    return(V2f32(a.x*b.x, a.y*b.y));
-    }
-    function Vec3_f32
-    hadamard(Vec3_f32 a, Vec3_f32 b){
-    return(V3f32(a.x*b.x, a.y*b.y, a.z*b.z));
-    }
-    function Vec4_f32
-    hadamard(Vec4_f32 a, Vec4_f32 b){
-    return(V4f32(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w));
-    }
+function Vec2_f32
+hadamard(Vec2_f32 a, Vec2_f32 b){
+  return(V2f32(a.x*b.x, a.y*b.y));
+}
+function Vec3_f32
+hadamard(Vec3_f32 a, Vec3_f32 b){
+  return(V3f32(a.x*b.x, a.y*b.y, a.z*b.z));
+}
+function Vec4_f32
+hadamard(Vec4_f32 a, Vec4_f32 b){
+  return(V4f32(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w));
+}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function f32
-    lerp(f32 a, f32 t, f32 b){
-    return(a + (b-a)*t);
-    }
+function f32
+lerp(f32 a, f32 t, f32 b){
+  return(a + (b-a)*t);
+}
 
-    function f32
-    lerp(f32 t, Range_f32 x){
-    return(x.min + (x.max - x.min)*t);
-    }
+function f32
+lerp(f32 t, Range_f32 x){
+  return(x.min + (x.max - x.min)*t);
+}
 
-    function i32
-    lerp(i32 a, f32 t, i32 b){
-    return((i32)(lerp((f32)a, t, (f32)b)));
-    }
+function i32
+lerp(i32 a, f32 t, i32 b){
+  return((i32)(lerp((f32)a, t, (f32)b)));
+}
 
-    function Vec2_f32
-    lerp(Vec2_f32 a, f32 t, Vec2_f32 b){
-    return(a + (b-a)*t);
-    }
+function Vec2_f32
+lerp(Vec2_f32 a, f32 t, Vec2_f32 b){
+  return(a + (b-a)*t);
+}
 
-    function Vec3_f32
-    lerp(Vec3_f32 a, f32 t, Vec3_f32 b){
-    return(a + (b-a)*t);
-    }
+function Vec3_f32
+lerp(Vec3_f32 a, f32 t, Vec3_f32 b){
+  return(a + (b-a)*t);
+}
 
-    function Vec4_f32
-    lerp(Vec4_f32 a, f32 t, Vec4_f32 b){
-    return(a + (b-a)*t);
-    }
+function Vec4_f32
+lerp(Vec4_f32 a, f32 t, Vec4_f32 b){
+  return(a + (b-a)*t);
+}
 
-    function f32
-    unlerp(f32 a, f32 x, f32 b){
-    f32 r = x;
-    if (b != a){
+function f32
+unlerp(f32 a, f32 x, f32 b){
+  f32 r = x;
+  if (b != a){
     r = (x - a)/(b - a);
-    }
-    return(r);
-    }
+  }
+  return(r);
+}
 
-    function f32
-    unlerp(u64 a, u64 x, u64 b){
-    f32 r = 0.f;
-    if (b <= x){
+function f32
+unlerp(u64 a, u64 x, u64 b){
+  f32 r = 0.f;
+  if (b <= x){
     r = 1.f;
-    }
-    else if (a < x){
+  }
+  else if (a < x){
     u64 n = x - a;
     u64 d = b - a;
     r = (f32)(((f64)n)/((f64)d));
-    }
-    return(r);
-    }
+  }
+  return(r);
+}
 
-    function Range_f32
-    unlerp(f32 a, Range_f32 x, f32 b){
-    x.min = unlerp(a, x.min, b);
-    x.max = unlerp(a, x.max, b);
-    return(x);
-    }
+function Range_f32
+unlerp(f32 a, Range_f32 x, f32 b){
+  x.min = unlerp(a, x.min, b);
+  x.max = unlerp(a, x.max, b);
+  return(x);
+}
 
-    function Range_f32
-    lerp(f32 a, Range_f32 x, f32 b){
-    x.min = lerp(a, x.min, b);
-    x.max = lerp(a, x.max, b);
-    return(x);
-    }
+function Range_f32
+lerp(f32 a, Range_f32 x, f32 b){
+  x.min = lerp(a, x.min, b);
+  x.max = lerp(a, x.max, b);
+  return(x);
+}
 
-    function f32
-    lerp(Range_f32 range, f32 t){
-    return(lerp(range.min, t, range.max));
-    }
+function f32
+lerp(Range_f32 range, f32 t){
+  return(lerp(range.min, t, range.max));
+}
 
-    function f32
-    clamp_range(Range_f32 range, f32 x){
-    return(clamp(range.min, x, range.max));
-    }
+function f32
+clamp_range(Range_f32 range, f32 x){
+  return(clamp(range.min, x, range.max));
+}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function b32
-    operator==(Rect_i32 a, Rect_i32 b){
-    return(a.p0 == b.p0 && a.p1 == b.p1);
-    }
-    function b32
-    operator==(Rect_f32 a, Rect_f32 b){
-    return(a.p0 == b.p0 && a.p1 == b.p1);
-    }
+function b32
+operator==(Rect_i32 a, Rect_i32 b){
+  return(a.p0 == b.p0 && a.p1 == b.p1);
+}
+function b32
+operator==(Rect_f32 a, Rect_f32 b){
+  return(a.p0 == b.p0 && a.p1 == b.p1);
+}
 
-    function b32
-    operator!=(Rect_i32 a, Rect_i32 b){
-    return(!(a == b));
-    }
-    function b32
-    operator!=(Rect_f32 a, Rect_f32 b){
-    return(!(a == b));
-    }
+function b32
+operator!=(Rect_i32 a, Rect_i32 b){
+  return(!(a == b));
+}
+function b32
+operator!=(Rect_f32 a, Rect_f32 b){
+  return(!(a == b));
+}
 
-    ////////////////////////////////
+////////////////////////////////
 
-    function Vec4_f32
-    unpack_color(ARGB_Color color){
-    Vec4_f32 result;
-    result.a = ((color >> 24) & 0xFF)/255.f;
-    result.r = ((color >> 16) & 0xFF)/255.f;
-    result.g = ((color >> 8) & 0xFF)/255.f;
-    result.b = ((color >> 0) & 0xFF)/255.f;
-    return(result);
-    }
+function Vec4_f32
+unpack_color(ARGB_Color color){
+  Vec4_f32 result;
+  result.a = ((color >> 24) & 0xFF)/255.f;
+  result.r = ((color >> 16) & 0xFF)/255.f;
+  result.g = ((color >> 8) & 0xFF)/255.f;
+  result.b = ((color >> 0) & 0xFF)/255.f;
+  return(result);
+}
 
-    function ARGB_Color
-    pack_color(Vec4_f32 color){
-    ARGB_Color result =
+function ARGB_Color
+pack_color(Vec4_f32 color){
+  ARGB_Color result =
     ((u8)(color.a*255) << 24) |
     ((u8)(color.r*255) << 16) |
     ((u8)(color.g*255) << 8) |

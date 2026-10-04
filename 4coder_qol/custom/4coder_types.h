@@ -450,82 +450,82 @@ enum{
   ManagedObjectType_Markers = 2,
 
   ManagedObjectType_COUNT = 4,
-  };
+};
 
-  api(custom)
-  typedef u64 Managed_ID;
+api(custom)
+typedef u64 Managed_ID;
 
-  api(custom)
-  typedef u64 Managed_Scope;
-  api(custom)
-  typedef u64 Managed_Object;
+api(custom)
+typedef u64 Managed_Scope;
+api(custom)
+typedef u64 Managed_Object;
 
-  api(custom)
-  struct Marker_Visual{
+api(custom)
+struct Marker_Visual{
   Managed_Scope scope;
   u32 slot_id;
   u32 gen_id;
-  };
+};
 
-  api(custom)
-  typedef u32 Glyph_Flag;
-  enum{
+api(custom)
+typedef u32 Glyph_Flag;
+enum{
   GlyphFlag_None = 0x0,
-  };
+};
 
-  api(custom)
-  struct Query_Bar{
+api(custom)
+struct Query_Bar{
   String_Const_u8 prompt;
   String_Const_u8 string;
   u64 string_capacity;
-  };
+};
 
-  api(custom)
-  struct Query_Bar_Ptr_Array{
+api(custom)
+struct Query_Bar_Ptr_Array{
   Query_Bar **ptrs;
   i32 count;
-  };
+};
 
-  api(custom)
-  struct Query_Bar_Group{
+api(custom)
+struct Query_Bar_Group{
   Application_Links *app;
   View_ID view;
 
   Query_Bar_Group(Application_Links *app);
   Query_Bar_Group(Application_Links *app, View_ID view);
   ~Query_Bar_Group();
-  };
+};
 
-  api(custom)
-  struct Font_Load_Location{
+api(custom)
+struct Font_Load_Location{
   String_Const_u8 file_name;
-  };
+};
 
-  api(custom)
-  typedef u32 Face_Antialiasing_Mode;
-  enum{
+api(custom)
+typedef u32 Face_Antialiasing_Mode;
+enum{
   FaceAntialiasingMode_8BitMono,
   FaceAntialiasingMode_1BitMono,
-  };
+};
 
-  api(custom)
-  struct Face_Load_Parameters{
+api(custom)
+struct Face_Load_Parameters{
   u32 pt_size;
   Face_Antialiasing_Mode aa_mode;
   b8 bold;
   b8 italic;
   b8 underline;
   b8 hinting;
-  };
+};
 
-  api(custom)
-  struct Face_Description{
+api(custom)
+struct Face_Description{
   Font_Load_Location font;
   Face_Load_Parameters parameters;
-  };
+};
 
-  api(custom)
-  struct Face_Metrics{
+api(custom)
+struct Face_Metrics{
   f32 text_height;
   f32 line_height;
   f32 ascent;

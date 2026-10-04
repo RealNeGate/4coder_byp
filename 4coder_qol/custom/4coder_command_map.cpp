@@ -809,34 +809,34 @@ map_set_binding_l(Mapping *mapping, Command_Map *map, Custom_Command_Function *c
 
 #define Bind(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_KeyStroke, (K), __VA_ARGS__, 0)
-  #define BindRelease(F, K, ...) \
+#define BindRelease(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_KeyRelease, (K), __VA_ARGS__, 0)
-  #define BindMouse(F, K, ...) \
+#define BindMouse(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseButton, (K), __VA_ARGS__, 0)
-  #define BindMouseRelease(F, K, ...) \
+#define BindMouseRelease(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseButtonRelease, (K), __VA_ARGS__, 0)
-  #define BindMouseWheel(F, ...) \
+#define BindMouseWheel(F, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseWheel, 0, __VA_ARGS__, 0)
-  #define BindMouseMove(F, ...) \
+#define BindMouseMove(F, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseMove, 0, __VA_ARGS__, 0)
-  #define BindCore(F, K, ...) \
+#define BindCore(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_Core, (K), __VA_ARGS__, 0)
 
-  #elif COMPILER_GCC | COMPILER_CLANG
+#elif COMPILER_GCC | COMPILER_CLANG
 
-  #define Bind(F, K, ...) \
+#define Bind(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_KeyStroke, (K), ##__VA_ARGS__, 0)
-  #define BindRelease(F, K, ...) \
+#define BindRelease(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_KeyRelease, (K), ##__VA_ARGS__, 0)
-  #define BindMouse(F, K, ...) \
+#define BindMouse(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseButton, (K), ##__VA_ARGS__, 0)
-  #define BindMouseRelease(F, K, ...) \
+#define BindMouseRelease(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseButtonRelease, (K), ##__VA_ARGS__, 0)
-  #define BindMouseWheel(F, ...) \
+#define BindMouseWheel(F, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseWheel, 0, ##__VA_ARGS__, 0)
-  #define BindMouseMove(F, ...) \
+#define BindMouseMove(F, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_MouseMove, 0, ##__VA_ARGS__, 0)
-  #define BindCore(F, K, ...) \
+#define BindCore(F, K, ...) \
   map_set_binding_l(m, map, BindFWrap_(F), InputEventKind_Core, (K), ##__VA_ARGS__, 0)
 
 #else

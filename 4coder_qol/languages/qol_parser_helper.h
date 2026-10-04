@@ -207,3 +207,24 @@ function Code_Index_Nest* qol_parse_paren(QOL_Parse_State *state){
   }
   return qol_nest_pop_paren(state);
 }
+
+//-
+
+function void
+none_parse_file(Application_Links *app, Code_Index_File *index, Arena *arena, String_Const_u8 contents, Token_Array *tokens){
+  QOL_Parse_State state = {};
+  qol_parse_init(app, arena, contents, tokens, &state);
+  state.index = index;
+  state.generic.token_it_index_opl = max_i32;
+  for (;;){
+    if (state.generic.finished){ break; }
+    else if (qol_tok_peek(&state, TokenBaseKind_ScopeOpen)) { qol_nest_push(&state, CodeIndexNest_Scope); }
+    else if (qol_tok_peek(&state, TokenBaseKind_ParenOpen)) { qol_nest_push(&state, CodeIndexNest_Paren); }
+    else if (qol_tok_peek(&state, TokenBaseKind_ScopeClose)){ qol_nest_pop_scope(&state); }
+    else if (qol_tok_peek(&state, TokenBaseKind_ParenClose)){ qol_nest_pop_paren(&state); }
+    else{
+      qol_tok_consume(&state);
+    }
+  }
+  qol_nest_resolve(&state, NULL);
+}

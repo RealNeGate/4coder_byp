@@ -32,6 +32,10 @@ function Managed_ID qol_get_token_color_base(Token *token){
   return defcolor_text_default;
 }
 
+function FColor qol_get_token_color_none(Token *token){
+  return fcolor_id(qol_get_token_color_base(token));
+}
+
 function FColor qol_get_token_color_cpp(Token *token){
   switch (token->sub_kind){
     case TokenCppKind_LiteralTrue:

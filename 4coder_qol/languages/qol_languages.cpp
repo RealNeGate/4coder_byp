@@ -4,6 +4,8 @@ CUSTOM_ID(attachment, buffer_lang);
 enum Lang_ID{
   Lang_None,
   Lang_Cpp,
+  Lang_4ed,
+  Lang_XSL,
   Lang_Lua,
   Lang_COUNT,
 };

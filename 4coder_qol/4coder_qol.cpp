@@ -82,6 +82,7 @@ global Lister_Node* g_qol_mouse_node;
 #include "../4coder_vim/4coder_vim_include.cpp"
 
 #include "languages/qol_languages.cpp"
+#include "languages/non_code.cpp"
 
 #include "4coder_qol_bindings.cpp"
 #include "4coder_qol_commands.cpp"
@@ -111,9 +112,13 @@ void custom_layer_init(Application_Links *app){
   MC_register(vim_normal_mode,  MC_Command_Global);
   MC_register(vim_paste_before, MC_Command_Cursor);
 
-  qol_lang_register(Lang_None, lang_lex_async_nop, lang_lex_sync_nop, lang_parse_nop, lang_paint_nop);
-  qol_lang_register(Lang_Cpp, lex_full_input_async_cpp, lex_full_input_cpp, cpp_parse_file, qol_get_token_color_cpp);
-  qol_lang_register(Lang_Lua, lex_full_input_async_lua, lex_full_input_lua, lua_parse_file, qol_get_token_color_lua);
+  //qol_lang_register(Lang_None, lang_lex_async_nop, lang_lex_sync_nop, lang_parse_nop, lang_paint_nop);
+  qol_lang_register(Lang_None, lex_full_input_async_none, lex_full_input_none, lang_parse_nop, qol_get_token_color_none);  // none_parse_file
+  qol_lang_register(Lang_Cpp,  lex_full_input_async_cpp,  lex_full_input_cpp,  cpp_parse_file, qol_get_token_color_cpp);
+  qol_lang_register(Lang_4ed,  lex_full_input_async_cpp,  lex_full_input_cpp,  cpp_parse_file, qol_get_token_color_cpp);
+  qol_lang_register(Lang_XSL,  lex_full_input_async_cpp,  lex_full_input_cpp,  cpp_parse_file, qol_get_token_color_cpp);
+  qol_lang_register(Lang_Cpp,  lex_full_input_async_cpp,  lex_full_input_cpp,  cpp_parse_file, qol_get_token_color_cpp);
+  qol_lang_register(Lang_Lua,  lex_full_input_async_lua,  lex_full_input_lua,  lua_parse_file, qol_get_token_color_lua);
 
   // Set up custom layer hooks
   {

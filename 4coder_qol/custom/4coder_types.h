@@ -721,13 +721,17 @@ enum{
   LayoutItemFlag_Ghost_Character = (1 << 1)
 };
 
+// NOTE(yasser): i'm aiming for a "command" based approach to items
+// because it'll compress far better and that's the most important piece
+// here.
+//
 api(custom)
 struct Layout_Item{
   i64 index;
-  u32 codepoint;
-  Layout_Item_Flag flags;
-  Rect_f32 rect;
-  f32 padded_y1;
+  u32 codepoint : 24;
+  Layout_Item_Flag flags : 8;
+  Vec2_f32 p;
+  f32 x1;
 };
 
 api(custom)
@@ -737,6 +741,7 @@ struct Layout_Item_Block{
   i64 item_count;
   i64 character_count;
   Face_ID face;
+  f32 line_height;
 };
 
 api(custom)

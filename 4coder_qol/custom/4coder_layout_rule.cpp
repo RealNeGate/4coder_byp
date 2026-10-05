@@ -16,11 +16,13 @@ get_layout_reflex(Layout_Item_List *list, Buffer_ID buffer, f32 width, Face_ID f
 
 function Rect_f32
 layout_reflex_get_rect(Application_Links *app, Layout_Reflex *reflex, i64 pos, b32 *unresolved_dependence){
+  Face_Metrics metrics = get_face_metrics(app, reflex->face);
+
   Rect_f32 rect = {};
   pos = clamp_bot(0, pos);
   if (range_contains(reflex->list->input_index_range, pos)){
     if (range_contains(reflex->list->manifested_index_range, pos)){
-      rect = layout_box_of_pos(*reflex->list, pos);
+      rect = layout_box_of_pos(metrics.line_height, *reflex->list, pos);
       *unresolved_dependence = false;
     }
     else{
@@ -95,8 +97,8 @@ layout_write(Arena *arena, Layout_Item_List *list, Face_ID face, i64 index, u32 
   item->index = index;
   item->codepoint = codepoint;
   item->flags = flags;
-  item->rect = rect;
-  item->padded_y1 = padded_y1;
+  item->p = rect.p0;
+  item->x1 = rect.x1;
   list->height = Max(list->height, rect.y1);
 }
 

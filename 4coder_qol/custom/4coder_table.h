@@ -9,6 +9,7 @@
 
 struct Table_Lookup{
   u64 hash;
+  u64 key;
   u32 index;
   b8 found_match;
   b8 found_empty_slot;

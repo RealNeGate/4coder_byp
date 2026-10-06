@@ -1,4 +1,10 @@
 
+CUSTOM_COMMAND_MC_GLOBAL_SIG(qol_toggle_auto_indent)
+CUSTOM_DOC("Toggles value for `auto_indent`")
+{
+  def_toggle_config_b32(vars_save_string_lit("automatically_indent_text_on_save"));
+}
+
 CUSTOM_COMMAND_MC_GLOBAL_SIG(qol_seek_char_query)
 CUSTOM_DOC("[QOL] This one just works in multi-cursor mode")
 {
